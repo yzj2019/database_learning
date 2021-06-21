@@ -134,7 +134,7 @@
                         }
                     });
                     data[data.length] = trdata;
-                    alert(data[0]["客户身份证号"]);
+                    // alert(data[0]["客户身份证号"]);
                 }
             }
             return data
@@ -161,6 +161,7 @@
                         }),
                         success: function (reData) { //回调函数的处理方式
                             alert(reData['info']);
+                            location.reload();
                         }
                     });
                 }
