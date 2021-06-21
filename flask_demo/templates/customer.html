@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>customer</title>
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/table.css') }}" rel="stylesheet">
+    <!--按钮-->
+    <link href="https://www.bootcss.com/p/buttons/css/buttons.css" rel="stylesheet">
+</head>
+
+
+<body>
+    <div class="container theme-showcase" role="main">
+        <div class="page-header">
+            <h1 style="text-align:center;">客户管理 - {{ dbname }}</h1>
+        </div>
+
+        <form method="post" id="table">
+            <div>
+                <input id="searchBtn" type="submit" name="search" value="search">
+            </div>
+        </form>
+
+        <div class="row:center;">
+            <div class="col-md-6:center;">
+                <table class="table table-bordered" id="search-table">
+                    <thead>
+                        <tr>
+                            <th> # </th>
+                            <th> 客户身份证号 </th>
+                            <th> 客户姓名 </th>
+                            <th> 客户联系电话 </th>
+                            <th> 客户家庭住址 </th>
+                            <th> 联系人姓名 </th>
+                            <th> 联系人手机号 </th>
+                            <th> 联系人email </th>
+                            <th> 联系人与客户的关系 </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td name="checkbox"> <input type="checkbox" id="checkbox"> </td>
+                            <td name="CustomerIDNumber">{{ row[0] }}</td>
+                            <td name="CustomerName">{{ row[1] }}</td>
+                            <td name="CustomerPhoneNumber">{{ row[2] }}</td>
+                            <td name="CustomerHomeAddress">{{ row[3] }}</td>
+                            <td name="CustomerCPName">{{ row[4] }}</td>
+                            <td name="CustomerCPPhoneNumber">{{ row[5] }}</td>
+                            <td name="CustomerCPEmail">{{ row[6] }}</td>
+                            <td name="CustomerCPRelationship">{{ row[7] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <button class="button button-glow button-border button-rounded button-primary" id="deleteBtn" name="delete"
+            value="delete">
+            删除
+        </button>
+    </div>
+
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        //双击编辑表格
+        $(function () {
+            $("#search-table td")
+                .on("dblclick", function () {
+                    if (!$(this).is(".input")) {
+                        $(this)
+                            .addClass("input")
+                            .html('<input type="text" value="' + $(this).text() + '" />')
+                            .find("input")
+                            .focus()
+                            .blur(function () {
+                                $(this)
+                                    .parent()
+                                    .removeClass("input")
+                                    .html($(this).val() || 0);
+                            });
+                    }
+                });
+        });
+    </script>
+    <script type="text/javascript">
+        //单击选择表格一行checkbox，鼠标悬停改变未选中行的样式
+        $(function () {
+            //除了表头（第一行）以外所有的行添加click事件.
+            $('#search-table tr').slice(1).on(
+                "click", function () {
+                    // 找到checkbox对象
+                    var chks = $("input[type='checkbox']", this);
+                    if (chks.prop("checked")) {
+                        // 之前已选中，设置为未选中
+                        $(this).removeClass("selected");    //切换样式
+                        chks.prop("checked", false);
+                    } else {
+                        // 之前未选中，设置为选中
+                        $(this).addClass("selected");
+                        chks.prop("checked", true);
+                    }
+                }
+            );
+        });
+    </script>
+    <script>
+        function getcheckeddata() {
+            //获取本页面中checkbox打勾的行的数据
+            var a = $("#checkbox");//获取所有复选框
+            var data = new Array();//所有checked行的数据
+            //第一种方法：通过checked属性确定被选中的复选框的父节点，通过children[index]来取第index个子节点td的内容
+            /** for(var i=0;i<a.length;i++){
+              if(a[i].checked){
+                var tddata=a[i].parentNode.parentNode.children[1].innerHTML;
+                alert(tddata);
+              }
+            } **/
+            //第二种方法：通过checked属性确定被选中的复选框的父节点，遍历父节点下所有的子节点td，当td的name等于某值时，获取该td下的内容
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].checked) {
+                    var tddata = a[i].parentNode.parentNode;
+                    var trdata = new Object();//该行除了checkbox的数据
+                    $(tddata).find("td").each(function () {
+                        if (this.getAttribute("name") != "checkbox") {
+                            trdata[this.getAttribute("name")] = this.innerHTML;
+                        }
+                    });
+                    data[data.length] = trdata;
+                    alert(data[0]["客户身份证号"]);
+                }
+            }
+            return data
+        }
+    </script>
+    <script>
+        $(function () {
+            //删除按钮的响应事件绑定
+            $('#deleteBtn').click(function () {
+                var checkeddata = getcheckeddata();
+                $.ajax({
+                    url: "customer", //访问地址--action地址
+                    type: "post", //提交方式
+                    dataType: 'json',
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8"
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        //提交给服务器的数据
+                        "checkeddata": checkeddata,
+                        "function": "delete"
+                    }),
+                    success: function (reData) { //回调函数的处理方式
+                        alert(reData['info']);
+                    }
+                });
+            });
+        });
+    </script>
+    <!--
+    <script>
+        $(function () {
+            //鼠标悬停改变未选中行的样式
+            $('tr').hover(
+                function () {
+                    // 找到checkbox对象
+                    var chks = $("input[type='checkbox']", this);
+                    if (!chks.prop("checked")) {
+                        // 之前未选中，鼠标悬停时可改变样式
+                        $(this).addClass("hover");    //切换样式
+                    }
+                },
+                function () {
+                    // 找到checkbox对象
+                    var chks = $("input[type='checkbox']", this);
+                    if (!chks.prop("checked")) {
+                        // 之前未选中，鼠标悬停时可改变样式
+                        $(this).removeClass("hover");    //切换样式
+                    }
+                }
+            );
+        });
+    </script>
+    -->
+</body>
+
+</html>
