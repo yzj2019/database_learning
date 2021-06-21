@@ -13,210 +13,210 @@ create database db_lab3;
 use db_lab3;
 
 /*==============================================================*/
-/* Table: Loan                                                    */
+/* Table: 借贷                                                    */
 /*==============================================================*/
-create table LoanRecord
+create table 借贷
 (
-   LoanNumber                  numeric(8,0) not null,
-   CustomerIDNumber               numeric(18,0) not null,
-   primary key (LoanNumber, CustomerIDNumber)
+   贷款号                  numeric(8,0) not null,
+   客户身份证号               numeric(18,0) not null,
+   primary key (贷款号, 客户身份证号)
 );
 
 /*==============================================================*/
-/* Table: SavingAccount                                                  */
+/* Table: 储蓄账户                                                  */
 /*==============================================================*/
-create table SavingAccount
+create table 储蓄账户
 (
-   AccountNumber                  numeric(8,0) not null,
-   SubBankName                 varchar(128),
-   balance                   float(8,2),
-   AccountOpeningDate                 date,
-   InterestRate                   float,
-   CurrencyType                 varchar(32),
-   primary key (AccountNumber)
+   账户号                  numeric(8,0) not null,
+   支行名称                 varchar(128),
+   余额                   float(8,2),
+   开户日期                 date,
+   利率                   float,
+   货币类型                 varchar(32),
+   primary key (账户号)
 );
 
 /*==============================================================*/
-/* Table: Staff                                                    */
+/* Table: 员工                                                    */
 /*==============================================================*/
-create table Staff
+create table 员工
 (
-   SubBankName                 varchar(128) not null,
-   DepartmentNumber                  numeric(8,0) not null,
-   StaffIDNumber               numeric(18,0) not null,
-   StaffName                 varchar(32),
-   StaffPhoneNumber               numeric(11,0),
-   StaffHomeAddress               varchar(1024),
-   StaffType                 bool,
-   StaffStartWorkingDate              date,
-   primary key (SubBankName, DepartmentNumber, StaffIDNumber)
+   支行名称                 varchar(128) not null,
+   部门号                  numeric(8,0) not null,
+   员工身份证号               numeric(18,0) not null,
+   员工姓名                 varchar(32),
+   员工电话号码               numeric(11,0),
+   员工家庭地址               varchar(1024),
+   员工类型                 bool,
+   开始工作的日期              date,
+   primary key (支行名称, 部门号, 员工身份证号)
 );
 
 /*==============================================================*/
-/* Table: Customer                                                    */
+/* Table: 客户                                                    */
 /*==============================================================*/
-create table Customer
+create table 客户
 (
-   CustomerIDNumber               numeric(18,0) not null,
-   CustomerName                 varchar(32),
-   CustomerPhoneNumber               numeric(11,0),
-   CustomerHomeAddress               varchar(1024),
-   CustomerCPName                varchar(32),
-   CustomerCPPhoneNumber               numeric(11,0),
-   CustomerCPEmail             varchar(64),
-   CustomerCPRelationship            varchar(128),
-   primary key (CustomerIDNumber)
+   客户身份证号               numeric(18,0) not null,
+   客户姓名                 varchar(32),
+   客户联系电话               numeric(11,0),
+   客户家庭住址               varchar(1024),
+   联系人姓名                varchar(32),
+   联系人手机号               numeric(11,0),
+   联系人email             varchar(64),
+   联系人与客户的关系            varchar(128),
+   primary key (客户身份证号)
 );
 
 /*==============================================================*/
-/* Table: CustomerAccount                                              */
+/* Table: 客户在银行的账户                                              */
 /*==============================================================*/
-create table CustomerAccount
+create table 客户在银行的账户
 (
-   SubBankName                 varchar(128) not null,
-   CustomerIDNumber               numeric(18,0) not null,
-   AccountType                 bool not null,
-   primary key (SubBankName, CustomerIDNumber, AccountType)
+   支行名称                 varchar(128) not null,
+   客户身份证号               numeric(18,0) not null,
+   账户类型                 bool not null,
+   primary key (支行名称, 客户身份证号, 账户类型)
 );
 
 /*==============================================================*/
-/* Table: Hold                                                    */
+/* Table: 持有                                                    */
 /*==============================================================*/
-create table Hold
+create table 持有
 (
-   AccountNumber                  numeric(8,0) not null,
-   CustomerIDNumber               numeric(18,0) not null,
-   LastAccessDate               date,
-   primary key (AccountNumber, CustomerIDNumber)
+   账户号                  numeric(8,0) not null,
+   客户身份证号               numeric(18,0) not null,
+   最近访问日期               date,
+   primary key (账户号, 客户身份证号)
 );
 
 /*==============================================================*/
-/* Table: CheckingAccount                                                  */
+/* Table: 支票账户                                                  */
 /*==============================================================*/
-create table CheckingAccount
+create table 支票账户
 (
-   AccountNumber                  numeric(8,0) not null,
-   SubBankName                 varchar(128),
-   balance                   float(8,2),
-   AccountOpeningDate                 date,
-   OverdraftAmount                  float(8,2),
-   primary key (AccountNumber)
+   账户号                  numeric(8,0) not null,
+   支行名称                 varchar(128),
+   余额                   float(8,2),
+   开户日期                 date,
+   透支额                  float(8,2),
+   primary key (账户号)
 );
 
 /*==============================================================*/
-/* Table: SubBank                                                    */
+/* Table: 支行                                                    */
 /*==============================================================*/
-create table SubBank
+create table 支行
 (
-   SubBankName                 varchar(128) not null,
-   SubBankAssets                 float(8,2),
-   primary key (SubBankName)
+   支行名称                 varchar(128) not null,
+   支行资产                 float(8,2),
+   primary key (支行名称)
 );
 
 /*==============================================================*/
-/* Table: Charge                                                    */
+/* Table: 负责                                                    */
 /*==============================================================*/
-create table Charge
+create table 负责
 (
-   SubBankName                 varchar(128) not null,
-   DepartmentNumber                  numeric(8,0) not null,
-   StaffIDNumber               numeric(18,0) not null,
-   CustomerIDNumber               numeric(18,0) not null,
-   ChargeType                 national varchar(1),
-   primary key (SubBankName, DepartmentNumber, StaffIDNumber, CustomerIDNumber)
+   支行名称                 varchar(128) not null,
+   部门号                  numeric(8,0) not null,
+   员工身份证号               numeric(18,0) not null,
+   客户身份证号               numeric(18,0) not null,
+   负责类型                 national varchar(1),
+   primary key (支行名称, 部门号, 员工身份证号, 客户身份证号)
 );
 
 /*==============================================================*/
-/* Table: Account                                                    */
+/* Table: 账户                                                    */
 /*==============================================================*/
-create table Account
+create table 账户
 (
-   AccountNumber                  numeric(8,0) not null,
-   SubBankName                 varchar(128) not null,
-   balance                   float(8,2),
-   AccountOpeningDate                 date,
-   primary key (AccountNumber)
+   账户号                  numeric(8,0) not null,
+   支行名称                 varchar(128) not null,
+   余额                   float(8,2),
+   开户日期                 date,
+   primary key (账户号)
 );
 
 /*==============================================================*/
-/* Table: Loan                                                    */
+/* Table: 贷款                                                    */
 /*==============================================================*/
-create table Loan
+create table 贷款
 (
-   LoanNumber                  numeric(8,0) not null,
-   SubBankName                 varchar(128) not null,
-   LoanAmount                 float(8,2),
-   LoanHowToPay               numeric(8,0),
-   primary key (LoanNumber)
+   贷款号                  numeric(8,0) not null,
+   支行名称                 varchar(128) not null,
+   所贷金额                 float(8,2),
+   逐次支付情况               numeric(8,0),
+   primary key (贷款号)
 );
 
 /*==============================================================*/
-/* Table: LoanPayment                                                  */
+/* Table: 贷款付款                                                  */
 /*==============================================================*/
-create table LoanPayment
+create table 贷款付款
 (
-   LoanPaymentCode                  numeric(8,0) not null,
-   LoanPaymentDate                 date not null,
-   LoanPaymentAmount                 float(8,2) not null,
-   LoanNumber                  numeric(8,0) not null,
-   primary key (LoanNumber, LoanPaymentCode, LoanPaymentDate, LoanPaymentAmount)
+   付款码                  numeric(8,0) not null,
+   付款日期                 date not null,
+   付款金额                 float(8,2) not null,
+   贷款号                  numeric(8,0) not null,
+   primary key (贷款号, 付款码, 付款日期, 付款金额)
 );
 
 /*==============================================================*/
-/* Table: Department                                                    */
+/* Table: 部门                                                    */
 /*==============================================================*/
-create table Department
+create table 部门
 (
-   SubBankName                 varchar(128) not null,
-   DepartmentNumber                  numeric(8,0) not null,
-   DepartmentName                 varchar(128),
-   DepartmentType                 national varchar(255),
-   DepartmentManagerIDNumber             numeric(18,0),
-   primary key (SubBankName, DepartmentNumber)
+   支行名称                 varchar(128) not null,
+   部门号                  numeric(8,0) not null,
+   部门名称                 varchar(128),
+   部门类型                 national varchar(255),
+   部门经理身份证号             numeric(18,0),
+   primary key (支行名称, 部门号)
 );
 
-alter table LoanRecord add constraint FK_LoanRecord foreign key (LoanNumber)
-      references Loan (LoanNumber) on delete restrict on update restrict;
+alter table 借贷 add constraint FK_借贷 foreign key (贷款号)
+      references 贷款 (贷款号) on delete restrict on update restrict;
 
-alter table LoanRecord add constraint FK_LoanRecord2 foreign key (CustomerIDNumber)
-      references Customer (CustomerIDNumber) on delete restrict on update restrict;
+alter table 借贷 add constraint FK_借贷2 foreign key (客户身份证号)
+      references 客户 (客户身份证号) on delete restrict on update restrict;
 
-alter table SavingAccount add constraint FK_AccountType foreign key (AccountNumber)
-      references Account (AccountNumber) on delete restrict on update restrict;
+alter table 储蓄账户 add constraint FK_账户类型 foreign key (账户号)
+      references 账户 (账户号) on delete restrict on update restrict;
 
-alter table Staff add constraint FK_hired foreign key (SubBankName, DepartmentNumber)
-      references Department (SubBankName, DepartmentNumber) on delete restrict on update restrict;
+alter table 员工 add constraint FK_所属 foreign key (支行名称, 部门号)
+      references 部门 (支行名称, 部门号) on delete restrict on update restrict;
 
-alter table CustomerAccount add constraint FK_Relationship_6 foreign key (SubBankName)
-      references SubBank (SubBankName) on delete restrict on update restrict;
+alter table 客户在银行的账户 add constraint FK_Relationship_6 foreign key (支行名称)
+      references 支行 (支行名称) on delete restrict on update restrict;
 
-alter table CustomerAccount add constraint FK_Relationship_7 foreign key (CustomerIDNumber)
-      references Customer (CustomerIDNumber) on delete restrict on update restrict;
+alter table 客户在银行的账户 add constraint FK_Relationship_7 foreign key (客户身份证号)
+      references 客户 (客户身份证号) on delete restrict on update restrict;
 
-alter table Hold add constraint FK_Hold foreign key (AccountNumber)
-      references Account (AccountNumber) on delete restrict on update restrict;
+alter table 持有 add constraint FK_持有 foreign key (账户号)
+      references 账户 (账户号) on delete restrict on update restrict;
 
-alter table Hold add constraint FK_Hold2 foreign key (CustomerIDNumber)
-      references Customer (CustomerIDNumber) on delete restrict on update restrict;
+alter table 持有 add constraint FK_持有2 foreign key (客户身份证号)
+      references 客户 (客户身份证号) on delete restrict on update restrict;
 
-alter table CheckingAccount add constraint FK_AccountType2 foreign key (AccountNumber)
-      references Account (AccountNumber) on delete restrict on update restrict;
+alter table 支票账户 add constraint FK_账户类型2 foreign key (账户号)
+      references 账户 (账户号) on delete restrict on update restrict;
 
-alter table Charge add constraint FK_Charge foreign key (SubBankName, DepartmentNumber, StaffIDNumber)
-      references Staff (SubBankName, DepartmentNumber, StaffIDNumber) on delete restrict on update restrict;
+alter table 负责 add constraint FK_负责 foreign key (支行名称, 部门号, 员工身份证号)
+      references 员工 (支行名称, 部门号, 员工身份证号) on delete restrict on update restrict;
 
-alter table Charge add constraint FK_Charge2 foreign key (CustomerIDNumber)
-      references Customer (CustomerIDNumber) on delete restrict on update restrict;
+alter table 负责 add constraint FK_负责2 foreign key (客户身份证号)
+      references 客户 (客户身份证号) on delete restrict on update restrict;
 
-alter table Account add constraint FK_OpenAccount foreign key (SubBankName)
-      references SubBank (SubBankName) on delete restrict on update restrict;
+alter table 账户 add constraint FK_开户 foreign key (支行名称)
+      references 支行 (支行名称) on delete restrict on update restrict;
 
-alter table Loan add constraint FK_Payment foreign key (SubBankName)
-      references SubBank (SubBankName) on delete restrict on update restrict;
+alter table 贷款 add constraint FK_发放 foreign key (支行名称)
+      references 支行 (支行名称) on delete restrict on update restrict;
 
-alter table LoanPayment add constraint FK_LoanHowToPay foreign key (LoanNumber)
-      references Loan (LoanNumber) on delete restrict on update restrict;
+alter table 贷款付款 add constraint FK_逐次支付情况 foreign key (贷款号)
+      references 贷款 (贷款号) on delete restrict on update restrict;
 
-alter table Department add constraint FK_in foreign key (SubBankName)
-      references SubBank (SubBankName) on delete restrict on update restrict;
+alter table 部门 add constraint FK_上属 foreign key (支行名称)
+      references 支行 (支行名称) on delete restrict on update restrict;
 

@@ -26,18 +26,19 @@ class MyDefSQL:
         '''执行一条语句sql'''
         # 使用cursor()方法获取操作游标（保存当前操作的结果状态）
         cursor = self.conn.cursor()
+        data = None
         err = 0
         try:
             # 执行sql语句
             cursor.execute(sql)
             # 提交到数据库执行
             self.conn.commit()
+            # 使用fetchall()方法获取所有数据
+            data = cursor.fetchall()
         except MySQLdb.Error as e:
             # 回滚
             self.conn.rollback()
             err = e[0]
-        # 使用fetchall()方法获取所有数据
-        data = cursor.fetchall()
         return [data, err]
         cursor.close()
 
@@ -47,7 +48,7 @@ class MyDefSQL:
 
     def showtablecnt(self):
         '''主页面展示各table的rowcount'''
-        tabs = self.execute("show tables")
+        tabs = self.execute("show tables")[0]
         res = list()
         for tab in tabs:
             row_cnt = self.execute("select count(*) from " + tab[0])[0]
@@ -56,13 +57,13 @@ class MyDefSQL:
 
     def showcustomer(self):
         '''用户管理'''
-        res = self.execute("select * from Customer")[0]
+        res = self.execute("select * from 客户")[0]
         return res
 
     def customer_del(self, data):
         '''单条用户相关信息删除，data是dict型的'''
         # 构造删除语句
-        sql = "delete from Customer where CustomerIDNumber=" + data["CustomerIDNumber"].encode('utf-8')
+        sql = "delete from 客户 where 客户身份证号=" + data[u"客户身份证号"].encode('utf-8')
         # i = 0
         # for key,value in data.items():
         #     if i:
@@ -80,9 +81,9 @@ class MyDefSQL:
         return res
 
     def customer_test(self):
-        data = self.execute("select * from Customer")
+        data = self.execute("select * from 客户")
         print(data)
-        self.execute("delete from Customer where CustomerIDNumber=372301200006110310")
+        self.execute("delete from 客户 where 客户身份证号=372301200006110310")
 
 
 

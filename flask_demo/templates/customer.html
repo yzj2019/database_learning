@@ -45,14 +45,14 @@
                         {% for row in rows %}
                         <tr>
                             <td name="checkbox"> <input type="checkbox" id="checkbox"> </td>
-                            <td name="CustomerIDNumber">{{ row[0] }}</td>
-                            <td name="CustomerName">{{ row[1] }}</td>
-                            <td name="CustomerPhoneNumber">{{ row[2] }}</td>
-                            <td name="CustomerHomeAddress">{{ row[3] }}</td>
-                            <td name="CustomerCPName">{{ row[4] }}</td>
-                            <td name="CustomerCPPhoneNumber">{{ row[5] }}</td>
-                            <td name="CustomerCPEmail">{{ row[6] }}</td>
-                            <td name="CustomerCPRelationship">{{ row[7] }}</td>
+                            <td name="客户身份证号">{{ row[0] }}</td>
+                            <td name="客户姓名">{{ row[1] }}</td>
+                            <td name="客户联系电话">{{ row[2] }}</td>
+                            <td name="客户家庭住址">{{ row[3] }}</td>
+                            <td name="联系人姓名">{{ row[4] }}</td>
+                            <td name="联系人手机号">{{ row[5] }}</td>
+                            <td name="联系人email">{{ row[6] }}</td>
+                            <td name="联系人与客户的关系">{{ row[7] }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -144,24 +144,26 @@
         $(function () {
             //删除按钮的响应事件绑定
             $('#deleteBtn').click(function () {
-                var checkeddata = getcheckeddata();
-                $.ajax({
-                    url: "customer", //访问地址--action地址
-                    type: "post", //提交方式
-                    dataType: 'json',
-                    headers: {
-                        "Content-Type": "application/json;charset=utf-8"
-                    },
-                    contentType: 'application/json; charset=utf-8',
-                    data: JSON.stringify({
-                        //提交给服务器的数据
-                        "checkeddata": checkeddata,
-                        "function": "delete"
-                    }),
-                    success: function (reData) { //回调函数的处理方式
-                        alert(reData['info']);
-                    }
-                });
+                if (confirm("确认要删除已经选择的行吗？")) {
+                    var checkeddata = getcheckeddata();
+                    $.ajax({
+                        url: "customer", //访问地址--action地址
+                        type: "post", //提交方式
+                        dataType: 'json',
+                        headers: {
+                            "Content-Type": "application/json;charset=utf-8"
+                        },
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify({
+                            //提交给服务器的数据
+                            "checkeddata": checkeddata,
+                            "function": "delete"
+                        }),
+                        success: function (reData) { //回调函数的处理方式
+                            alert(reData['info']);
+                        }
+                    });
+                }
             });
         });
     </script>

@@ -86,6 +86,8 @@ def customer():
         return redirect(url_for('login'))
     
     tabs = db.showcustomer()
+    if tabs==None:
+        tabs=""
 
     if request.method == "POST":
         datas = json.loads(request.get_data(as_text=True))
