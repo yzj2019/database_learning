@@ -33,5 +33,73 @@
 
   ![1](./figs/home1.png)
 
+### 表单的附加功能
+
+表单和按钮的样式也是从bootstrap的示例上扒下来的。
+
+1. 实现了search得到的表单前面加上checkbox，使用checkbox来选择待操作的行，效果如下：
+
+   ![1](./figs/additional_1-1.png)
+
+   选中后会变样式
+
+   ![1](./figs/additional_1-2.png)
+
+   再次点击会取消选中。
+
+2. 实现了双击使表单变成input块，用户可以修改表单内容，在此基础上进行操作
+
+   ![1](./figs/additional_2-1.png)
+
+3. 实现了点击按钮，为表单添加已选中的所有行的副本，用户可以基于已有数据快速编造(bushi)新数据；
+
+   副本是只显示在前端的，并不改变后端数据，只有使用相应的增删改功能按钮后，才会相应改变后端数据；
+
+   点击按钮前：
+
+   ![1](./figs/additional_3-1.png)
+
+   点击按钮后：
+
+   ![1](./figs/additional_3-2.png)
+
 ### 客户管理
+
+1. 删除
+
+   - 点击删除后会提示确认信息：
+
+     ![1](./figs/customer_del1.png)
+
+     点击确认后，若删除成功，会提示消息
+
+     ![1](./figs/customer_del2.png)
+
+     点击确认后刷新页面，发现成功删除
+
+     ![1](./figs/customer_del3.png)
+
+     ！尚未错误处理
+
+2. 插入
+
+   原始页面：
+
+   ![1](./figs/customer_insert1.png)
+
+   增加副本并编辑，得到内容如下图：
+
+   ![1](./figs/customer_insert2.png)
+
+   点击插入，提示信息和插入后页面如下：
+
+   ![1](./figs/customer_insert3.png)
+
+   ![1](./figs/customer_insert4.png)
+
+   ![1](./figs/customer_insert5.png)
+
+   能看到插入成功。
+
+   ！尚未错误处理
 
