@@ -20,6 +20,7 @@ class MyDefSQL:
             # print(e[0])
             err = e[0]
             self.conn = None
+        err = str(err)
         return err
 
     def execute(self, sql):
@@ -39,6 +40,7 @@ class MyDefSQL:
             # 回滚
             self.conn.rollback()
             err = e[0]
+        err = str(err)
         return [data, err]
         cursor.close()
 
@@ -60,6 +62,32 @@ class MyDefSQL:
         res = self.execute("select * from 客户")[0]
         return res
 
+    def customer_insert(self, data):
+        '''单条用户相关信息插入，data是dict型的'''
+        # 构造sql语句
+        sql = "insert into 客户"
+        head = "("
+        body = "values ("
+        i = 0
+        for key,value in data.items():
+            if i:
+                head = head + ','
+                body = body + ','
+            i = i + 1
+            head = head + key.encode('utf-8')
+            if value.isdigit():
+                body = body + value.encode('utf-8')
+            else:
+                body = body + "'" + value.encode('utf-8') + "'"
+        head = head + ")"
+        body = body + ")"
+        sql = sql + ' ' + head + ' ' + body
+        print("execute sql is: " + sql)
+        # 错误信息
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
+
     def customer_del(self, data):
         '''单条用户相关信息删除，data是dict型的'''
         # 构造删除语句
@@ -74,11 +102,11 @@ class MyDefSQL:
         #         sql = sql + value.encode('utf-8')
         #     else:
         #         sql = sql + "'" + value.encode('utf-8') + "'"
-        print("sql is: " + sql)
+        print("execute sql is: " + sql)
         # 错误信息
-        res = self.execute(sql)
-        print(res)
-        return res
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
 
     def customer_test(self):
         data = self.execute("select * from 客户")

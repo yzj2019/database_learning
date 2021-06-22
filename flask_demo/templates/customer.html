@@ -55,14 +55,37 @@
                             <td name="联系人与客户的关系">{{ row[7] }}</td>
                         </tr>
                         {% endfor %}
+                        <!--查询后总有一行空行，方便添加数据-->
+                        <tr>
+                            <td name="checkbox"> <input type="checkbox" id="checkbox"> </td>
+                            <td name="客户身份证号"></td>
+                            <td name="客户姓名"></td>
+                            <td name="客户联系电话"></td>
+                            <td name="客户家庭住址"></td>
+                            <td name="联系人姓名"></td>
+                            <td name="联系人手机号"></td>
+                            <td name="联系人email"></td>
+                            <td name="联系人与客户的关系"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
+        <button class="button button-glow button-border button-rounded button-primary" id="newlineBtn" name="newline"
+            value="newline">
+            添加选中行副本
+        </button>
+        <button class="button button-glow button-border button-rounded button-primary" id="insertBtn" name="insert"
+            value="insert">
+            插入选中行
+        </button>
+        <button class="button button-glow button-border button-rounded button-primary" id="alterBtn" name="alter"
+            value="alter">
+            修改选中行
+        </button>
         <button class="button button-glow button-border button-rounded button-primary" id="deleteBtn" name="delete"
             value="delete">
-            删除
+            删除选中行
         </button>
     </div>
 
@@ -71,51 +94,58 @@
     <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         //双击编辑表格
-        $(function () {
-            $("#search-table td")
-                .on("dblclick", function () {
-                    if (!$(this).is(".input")) {
-                        $(this)
-                            .addClass("input")
-                            .html('<input type="text" value="' + $(this).text() + '" />')
-                            .find("input")
-                            .focus()
-                            .blur(function () {
-                                $(this)
-                                    .parent()
-                                    .removeClass("input")
-                                    .html($(this).val() || 0);
-                            });
-                    }
-                });
-        });
+        $(document)
+            //为了使新增加的元素依旧适用绑定的事件，使用on绑定事件
+            .on("dblclick", "#search-table td", function () {
+                if (!$(this).is(".input")) {
+                    $(this)
+                        .addClass("input")
+                        .html('<input type="text" value="' + $(this).text() + '" />')
+                        .find("input")
+                        .focus()
+                        .blur(function () {
+                            $(this)
+                                .parent()
+                                .removeClass("input")
+                                .html($(this).val());
+                        });
+                }
+            });
+            //后续可以考虑增加focus时全选、CTRL+ENTER时blur
     </script>
+
     <script type="text/javascript">
         //单击选择表格一行checkbox，鼠标悬停改变未选中行的样式
-        $(function () {
-            //除了表头（第一行）以外所有的行添加click事件.
-            $('#search-table tr').slice(1).on(
-                "click", function () {
-                    // 找到checkbox对象
-                    var chks = $("input[type='checkbox']", this);
-                    if (chks.prop("checked")) {
-                        // 之前已选中，设置为未选中
-                        $(this).removeClass("selected");    //切换样式
-                        chks.prop("checked", false);
-                    } else {
-                        // 之前未选中，设置为选中
-                        $(this).addClass("selected");
-                        chks.prop("checked", true);
-                    }
+        //除了表头（第一行）以外所有的行添加click事件.
+        $(document).on(
+            "click", '#search-table tr', function () {
+                // 找到checkbox对象
+                var chks = $("input[type='checkbox']", this);
+                if (chks.length == 0)
+                    //如果没有，则代表是表头
+                    return;
+                if (chks.prop("checked")) {
+                    // 之前已选中，设置为未选中
+                    $(this).removeClass("selected");    //切换样式
+                    chks.prop("checked", false);
+                } else {
+                    // 之前未选中，设置为选中
+                    $(this).addClass("selected");
+                    chks.prop("checked", true);
                 }
-            );
-        });
+            }
+        );
     </script>
+
     <script>
-        function getcheckeddata() {
+        function get_checkeddata() {
             //获取本页面中checkbox打勾的行的数据
-            var a = $("#checkbox");//获取所有复选框
+            var a = $("input[id='checkbox']:checked");//获取所有选中的复选框
             var data = new Array();//所有checked行的数据
+            if (a.length == 0) {
+                alert("尚未选中任何行！");
+                return data;
+            }
             //第一种方法：通过checked属性确定被选中的复选框的父节点，通过children[index]来取第index个子节点td的内容
             /** for(var i=0;i<a.length;i++){
               if(a[i].checked){
@@ -125,46 +155,111 @@
             } **/
             //第二种方法：通过checked属性确定被选中的复选框的父节点，遍历父节点下所有的子节点td，当td的name等于某值时，获取该td下的内容
             for (var i = 0; i < a.length; i++) {
-                if (a[i].checked) {
-                    var tddata = a[i].parentNode.parentNode;
-                    var trdata = new Object();//该行除了checkbox的数据
-                    $(tddata).find("td").each(function () {
-                        if (this.getAttribute("name") != "checkbox") {
-                            trdata[this.getAttribute("name")] = this.innerHTML;
-                        }
-                    });
-                    data[data.length] = trdata;
-                    // alert(data[0]["客户身份证号"]);
-                }
+                var tr = a[i].parentNode.parentNode;
+                var trdata = new Object();//该行除了checkbox的数据
+                $(tr).find("td").each(function () {
+                    if (this.getAttribute("name") != "checkbox") {
+                        trdata[this.getAttribute("name")] = this.innerHTML;
+                    }
+                });
+                data[data.length] = trdata;
+                // alert(data[0]["客户身份证号"]);
             }
             return data
         }
     </script>
+
+    <script>
+        function post_json_to_server(posturl, postdata, succfunc) {
+            //将json数据postdata用post方法提交到server
+            //并接收server传回的回调数据并自动转成js对象，供回调函数func处理
+            $.ajax({
+                url: posturl, //访问地址--action地址
+                type: "post", //提交方式
+                dataType: 'json',
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8"
+                },
+                contentType: 'application/json; charset=utf-8',
+                data: postdata,
+                success: succfunc
+            });
+        }
+    </script>
+
     <script>
         $(function () {
-            //删除按钮的响应事件绑定
+            //插入按钮的响应事件绑定，点击按钮插入选中的行
+            $('#insertBtn').click(function () {
+                if (confirm("确认要插入已经选择的行吗？")) {
+                    var checkeddata = get_checkeddata();
+                    if (checkeddata.length == 0)
+                        return;
+                    post_json_to_server(
+                        "customer",
+                        JSON.stringify({
+                            //提交给服务器的数据
+                            "checkeddata": checkeddata,
+                            "function": "insert"
+                        }),
+                        function (reData) {
+                            //回调函数的处理方式
+                            alert(reData['info']);
+                            location.reload();
+                        }
+                    );
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(function () {
+            //删除按钮的响应事件绑定，点击按钮删除选中的行
             $('#deleteBtn').click(function () {
                 if (confirm("确认要删除已经选择的行吗？")) {
-                    var checkeddata = getcheckeddata();
-                    $.ajax({
-                        url: "customer", //访问地址--action地址
-                        type: "post", //提交方式
-                        dataType: 'json',
-                        headers: {
-                            "Content-Type": "application/json;charset=utf-8"
-                        },
-                        contentType: 'application/json; charset=utf-8',
-                        data: JSON.stringify({
+                    var checkeddata = get_checkeddata();
+                    if (checkeddata.length == 0)
+                        return;
+                    post_json_to_server(
+                        "customer",
+                        JSON.stringify({
                             //提交给服务器的数据
                             "checkeddata": checkeddata,
                             "function": "delete"
                         }),
-                        success: function (reData) { //回调函数的处理方式
+                        function (reData) {
+                            //回调函数的处理方式
                             alert(reData['info']);
                             location.reload();
                         }
-                    });
+                    );
                 }
+            });
+        });
+    </script>
+
+    <script>
+        function addTr(tab) {
+            //向id为tab的表的最后一行后添加checkbox选中的所有行的副本
+            //获取table最后一行 $("#tab tr:last")
+            //获取table第一行 $("#tab tr").eq(0)
+            //获取table倒数第二行 $("#tab tr").eq(-2)
+            var table = $("#" + tab);
+            var a = $("input[id='checkbox']:checked");//获取所有复选框
+            if (a.length == 0) {
+                alert("尚未选中任何行！");
+                return data;
+            }
+            for (var i = 0; i < a.length; i++) {
+                var tr = a[i].parentNode.parentNode;    //checked复选框所在行
+                table.append(tr.cloneNode(true));       //deepcopy复制并添加到table末尾
+            }
+        }
+        $(function () {
+            //添加行按钮的响应时间绑定，点击按钮为指定表添加选中的所有行的副本
+            $('#newlineBtn').click(function () {
+                addTr("search-table");
             });
         });
     </script>

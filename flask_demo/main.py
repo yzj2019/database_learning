@@ -32,7 +32,7 @@ def login():
         db = MyDefSQL(username, password, ipaddr, database)
         err = db.login()
 
-        if err != 0:
+        if err != '0':
             return render_template("login_fail.html", err=err)
         else:
             #print(err)
@@ -94,12 +94,26 @@ def customer():
         function = datas["function"]
         datas = datas["checkeddata"]
         # print(function)
-        # print(data[0][u"客户身份证号"])
+        # print(datas[0][u"客户身份证号"])
         if function == "delete":
-            res = {'info':'删除成功！', 'data':None}
+            res = {'info':'删除成功！', 'errs':[]}
             for data in datas:
                 err = db.customer_del(data)
+                if err != '0':
+                    res['errs'].append([data[u"客户身份证号"],err])
+            if len(res['errs']) != 0:
+                res['info'] = "删除失败！"
             return json.dumps(res)
+        elif function == "insert":
+            res = {'info':'插入成功！', 'errs':[]}
+            for data in datas:
+                err = db.customer_insert(data)
+                if err != '0':
+                    res['errs'].append([data[u"客户身份证号"],err])
+            if len(res['errs']) != 0:
+                res['info'] = "插入失败！"
+            return json.dumps(res)
+
     else:
         return render_template("customer.html", rows = tabs, dbname=session['database'])
 
