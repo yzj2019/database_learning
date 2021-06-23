@@ -1,6 +1,6 @@
-function get_checkeddata() {
+function get_checkeddata(tab) {
   //获取本页面中checkbox打勾的行的数据
-  var a = $("input[id='checkbox']:checked"); //获取所有选中的复选框
+  var a = $('#'+tab).find("input[id='checkbox']:checked"); //获取id为tab的元素的子元素中，所有选中的复选框
   var data = new Array(); //所有checked行的数据
   if (a.length == 0) {
     alert("尚未选中任何行！");
@@ -52,7 +52,7 @@ function addTr(tab) {
   //获取table第一行 $("#tab tr").eq(0)
   //获取table倒数第二行 $("#tab tr").eq(-2)
   var table = $("#" + tab);
-  var a = $("input[id='checkbox']:checked"); //获取所有复选框
+  var a = table.find("input[id='checkbox']:checked"); //获取id为tab的元素的子元素中，所有复选框
   if (a.length == 0) {
     alert("尚未选中任何行！");
     return data;
@@ -62,6 +62,7 @@ function addTr(tab) {
     table.append(tr.cloneNode(true)); //deepcopy复制并添加到table末尾
   }
 }
+
 $(document).ready(function () {
   //添加行按钮的响应时间绑定，点击按钮为指定表添加选中的所有行的副本
   $("#newlineBtn").click(function () {
@@ -75,14 +76,38 @@ $(document).ready(function () {
   //$(document).ready(function(){});表明在文档完全加载好才运行
   $("#insertBtn").click(function () {
     if (confirm("确认要插入已经选择的行吗？")) {
-      var checkeddata = get_checkeddata();
+      var checkeddata = get_checkeddata('search-table');
       if (checkeddata.length == 0) return;
       post_json_to_server(
         "customer",
         JSON.stringify({
           //提交给服务器的数据
-          checkeddata: checkeddata,
+          //JSON.stringify()自动将中文转译为unicode编码，注意！！！
+          inputdata: checkeddata,
           function: "insert",
+        }),
+        function (reData) {
+          //回调函数的处理方式
+          alert(reData["info"]);
+          location.reload();
+        }
+      );
+    }
+  });
+});
+
+$(document).ready(function () {
+  //修改按钮的响应事件绑定，点击按钮修改选中的行
+  $("#updateBtn").click(function () {
+    if (confirm("确认要修改已经选择的行吗？")) {
+      var checkeddata = get_checkeddata('search-table');
+      if (checkeddata.length == 0) return;
+      post_json_to_server(
+        "customer",
+        JSON.stringify({
+          //提交给服务器的数据
+          inputdata: checkeddata,
+          function: "update",
         }),
         function (reData) {
           //回调函数的处理方式
@@ -98,13 +123,13 @@ $(document).ready(function () {
   //删除按钮的响应事件绑定，点击按钮删除选中的行
   $("#deleteBtn").click(function () {
     if (confirm("确认要删除已经选择的行吗？")) {
-      var checkeddata = get_checkeddata();
+      var checkeddata = get_checkeddata('search-table');
       if (checkeddata.length == 0) return;
       post_json_to_server(
         "customer",
         JSON.stringify({
           //提交给服务器的数据
-          checkeddata: checkeddata,
+          inputdata: checkeddata,
           function: "delete",
         }),
         function (reData) {

@@ -2,7 +2,7 @@
 $(document).ready(function () {
   $(document)
     //为了使新增加的元素依旧适用绑定的事件，使用on绑定事件
-    .on("dblclick", "#search-table td", function () {
+    .on("dblclick", "table td", function () {
       if (!$(this).is(".input")) {
         $(this)
           .addClass("input")
@@ -20,7 +20,7 @@ $(document).ready(function () {
 //单击选择表格一行checkbox，鼠标悬停改变未选中行的样式
 //除了表头（第一行）以外所有的行添加click事件.
 $(document).ready(function () {
-  $(document).on("click", "#search-table tr", function () {
+  $(document).on("click", "table tr", function () {
     // 找到checkbox对象
     var chks = $("input[type='checkbox']", this);
     if (chks.length == 0)

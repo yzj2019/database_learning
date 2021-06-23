@@ -90,9 +90,21 @@ def customer():
         tabs=""
 
     if request.method == "POST":
+        if 'search' in request.form:
+            # 是由search表单提交的post请求
+            searchinfo = {}
+            print(len(request.form[u"客户身份证号"]))
+            for key,value in request.form.items():
+                # 注意这里key和value仍然是unicode编码，统一在db.py中处理！
+                if len(value) != 0 and key!='search':
+                    # 做第一层过滤，使得可以表单中某块信息不填
+                    searchinfo[key] = value
+            tabs = db.customer_search(searchinfo)
+            return render_template("customer.html", rows = tabs, dbname=session['database'])
+        # 其它删改查需求，是由Ajax提交的post
         datas = json.loads(request.get_data(as_text=True))
         function = datas["function"]
-        datas = datas["checkeddata"]
+        datas = datas["inputdata"]
         # print(function)
         # print(datas[0][u"客户身份证号"])
         if function == "delete":
@@ -112,6 +124,15 @@ def customer():
                     res['errs'].append([data[u"客户身份证号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "插入失败！"
+            return json.dumps(res)
+        elif function == "update":
+            res = {'info':'修改成功！', 'errs':[]}
+            for data in datas:
+                err = db.customer_update(data)
+                if err != '0':
+                    res['errs'].append([data[u"客户身份证号"],err])
+            if len(res['errs']) != 0:
+                res['info'] = "修改失败！"
             return json.dumps(res)
 
     else:

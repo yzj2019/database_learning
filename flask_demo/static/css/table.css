@@ -1,5 +1,23 @@
+/* 搜索信息表单的样式 */
+.form-searchinfo {
+  width: 100%;
+  padding: 6px;
+  margin: auto;
+}
+
+.form-searchinfo .checkbox {
+  font-weight: 400;
+}
+
+.form-searchinfo .form-floating:focus-within {
+  z-index: 2;
+}
+/* 表格行选中的样式 */
 .selected {
   background: #ff6500;
   color: #fff;
 }
-
+/* 小字体 */
+.smallerfont {
+  font-size: 4px;
+}
