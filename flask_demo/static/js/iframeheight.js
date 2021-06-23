@@ -7,12 +7,6 @@ function IFrameResize() {
   obj.height = this.document.body.scrollHeight; //调整父页面中IFrame的高度为此页面的高度
 }
 
-$(document).ready(function(){
-  $(window).load(function(){
-    IFrameResize();
-  });
-});
-
 // 绑定子页面窗口大小改变事件？
 // $('.table').resize(IFrameResize());
 // 尝试了各种事件，都无法监听页面高度变化。故每次涉及到高度变化的事件，就调用上面的函数
