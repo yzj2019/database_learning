@@ -195,7 +195,7 @@ class MyDefSQL:
         return res
 
     def account_insert(self, data, issaving):
-        '''单账户开户，data是dict型的；涉及多个表操作，故需要组合查询'''
+        '''单账户开户，data是dict型的；涉及多个表操作互相影响，故需要组合查询'''
         # 构造sql语句
         sqls = []
         # 插仅一种账户约束
@@ -252,7 +252,7 @@ class MyDefSQL:
         return err
 
     def account_update(self, data, issaving):
-        '''单账户相关信息修改，data是dict型的；涉及多个表操作，故需要组合执行'''
+        '''单账户相关信息修改，data是dict型的；涉及多个表操作互相影响，故需要组合执行'''
         # 构造sql语句
         sqls = []
         # 默认无法更改账户类型、账户号、所在支行、客户身份证号
@@ -285,12 +285,41 @@ class MyDefSQL:
         return err
 
     def account_del(self, data, issaving):
-        '''单账户相关信息删除，data是dict型的；涉及多个表操作，故需要组合执行'''
-        # 构造删除语句
-        sql = "delete from 客户 where 客户身份证号="
-        print("execute sql is: " + sql)
+        '''单账户相关信息删除，data是dict型的；涉及多个表操作互相影响，故需要组合执行'''
+        # 构造sql语句
+        sqls = []
+        # 删除仅一种账户约束
+        sql = "delete from `客户在银行的账户` where 支行名称='" + data[u"支行名称"].encode('utf-8') + "' and 客户身份证号='" + data[u"客户身份证号"].encode('utf-8') + "' and 账户类型="
+        if issaving:
+            sql = sql + "TRUE"
+        else:
+            sql = sql + "FALSE"
+        sqls.append(sql)
+        # 删具体账户细节
+        if issaving:
+            sql = "delete from `储蓄账户` where 账户号=" + data[u"账户.账户号"].encode('utf-8')
+        else:
+            sql = "delete from `支票账户` values 账户号=" + data[u"账户.账户号"].encode('utf-8')
+        sqls.append(sql)
+        # 最后删除账户，因为有外键依赖它（其实组合操作中顺序没区别了就）
+        sql = "delete from `账户`"
+        head = ""
+        body = "where 账户号=" + data[u"账户.账户号"].encode('utf-8')
+        sql = sql + ' ' + head + ' ' + body
+        sqls.append(sql)
+        # 判断需不需要更新支行资产
+        pre_balance = self.execute("select 余额 from 账户 where 账户号=" + data[u"账户.账户号"].encode('utf-8'))[0][0][0]
+        if float(pre_balance) != 0:
+            # 尚有余额，需要在销户时结清
+            pre_assets = self.execute("select 支行资产 from 支行 where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'")[0][0][0]
+            new_assets = pre_assets - float(pre_balance)
+            sql = "update 支行 set 支行资产=" + str(new_assets) + " where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'"
+            sqls.append(sql)
+        print("execute sql is:")
+        for sql in sqls:
+            print(sql)
         # 错误信息
-        err = self.execute(sql)[1]
+        err = self.execute_all(sqls)[1]
         print("err is: " + err)
         return err
 
