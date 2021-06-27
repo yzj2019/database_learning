@@ -30,11 +30,11 @@ function get_checkeddata(tab) {
   return data;
 }
 
-function post_json_to_server(posturl, postdata, succfunc) {
-  //将json数据postdata用post方法提交到server
+function post_json_to_server(postdata, succfunc) {
+  //将json数据postdata用post方法提交到server的当前页面
   //并接收server传回的回调数据并自动转成js对象，供回调函数func处理
   $.ajax({
-    url: posturl, //访问地址--action地址
+    //url: posturl, //访问地址--action地址，默认是当前页面
     type: "post", //提交方式
     dataType: "json",
     headers: {
@@ -79,7 +79,6 @@ $(document).ready(function () {
       var checkeddata = get_checkeddata('search-table');
       if (checkeddata.length == 0) return;
       post_json_to_server(
-        "customer",
         JSON.stringify({
           //提交给服务器的数据
           //JSON.stringify()自动将中文转译为unicode编码，注意！！！
@@ -103,7 +102,6 @@ $(document).ready(function () {
       var checkeddata = get_checkeddata('search-table');
       if (checkeddata.length == 0) return;
       post_json_to_server(
-        "customer",
         JSON.stringify({
           //提交给服务器的数据
           inputdata: checkeddata,
@@ -126,7 +124,6 @@ $(document).ready(function () {
       var checkeddata = get_checkeddata('search-table');
       if (checkeddata.length == 0) return;
       post_json_to_server(
-        "customer",
         JSON.stringify({
           //提交给服务器的数据
           inputdata: checkeddata,

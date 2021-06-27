@@ -27,8 +27,13 @@
         <li class="nav-item">
           <a class="nav-link" href="customer" target="iframe">客户管理</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="account" target="iframe">账户管理</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#!" id="account" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">账户管理</a>
+          <div class="dropdown-menu dropdown-menu-left" style="min-width:100%;" aria-labelledby="dropdownExample">
+            <a class="dropdown-item" href="account/saving" target="iframe">储蓄账户</a>
+            <a class="dropdown-item" href="account/checking" target="iframe">支票账户</a>
+          </div>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="loan" target="iframe">贷款管理</a>
@@ -36,17 +41,7 @@
         <li class="nav-item">
           <a class="nav-link" href="statistic" target="iframe">业务统计</a>
         </li>
-        <!--
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" role="button" href="#!" id="dropdownExample" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">Dropdown</a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownExample">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        -->
+
       </ul>
       <button class="navbar-toggler navbar-toggler-right navbar-icon" type="button" data-toggle="collapse"
         data-target="#navbar-mobile" aria-controls="navbar-mobile" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,11 +94,35 @@
   <!--单击链接跳转后导航栏高亮-->
   <script>
     $(function () {
-      $(".nav-item").on("click", function(){
+      $(".nav-item").on("click", function () {
         $(".nav-item").removeClass("active");
         $(this).addClass("active");
       });
     });
+  </script>
+
+  <!--导航栏dropdown鼠标滑过展开-->
+  <script>
+    $(document).ready(function () {
+      //菜单可点击
+      $(document).off('click.bs.dropdown.data-api');
+      //鼠标滑过显示下拉菜单
+      dropdownOpen();
+    });
+    function dropdownOpen() {
+      var $dropdownLi = $('li.dropdown');
+      var $dropdowna = $dropdownLi.find('.dropdown-toggle')
+      var $dropdownm = $dropdownLi.find('.dropdown-menu')
+      $dropdownLi.mouseover(function () {
+        $(this).addClass('show');
+        $dropdownm.addClass('show');
+        $dropdowna.attr('aria-expanded', "true");
+      }).mouseout(function () {
+        $(this).removeClass('show');
+        $dropdownm.removeClass('show');
+        $dropdowna.attr('aria-expanded', "false");
+      });
+    }
   </script>
 </body>
 

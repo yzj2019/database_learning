@@ -44,9 +44,32 @@ class MyDefSQL:
         return [data, err]
         cursor.close()
 
+    def execute_all(self, sqls):
+        '''执行一组语句sql'''
+        # 使用cursor()方法获取操作游标（保存当前操作的结果状态）
+        cursor = self.conn.cursor()
+        data = None
+        err = 0
+        try:
+            # 执行所有sql语句
+            for sql in sqls:
+                cursor.execute(sql)
+            # 提交到数据库执行
+            self.conn.commit()
+            # 使用fetchall()方法获取所有数据
+            data = cursor.fetchall()
+        except MySQLdb.Error as e:
+            # 回滚
+            self.conn.rollback()
+            err = e[0]
+        err = str(err)
+        return [data, err]
+        cursor.close()
+
     def call_proc(self, *args):
         '''执行创建好的存储过程'''
         pass
+
 
     # 业务逻辑部分
     # table
@@ -73,11 +96,13 @@ class MyDefSQL:
         body = "values ("
         i = 0
         for key,value in data.items():
+            # 迭代dict的key和value，方便构造sql语句
             if i:
                 head = head + ','
                 body = body + ','
             i = i + 1
             head = head + key.encode('utf-8')
+            # 需要判断是不是字符串，来加单引号
             if value.isdigit():
                 body = body + value.encode('utf-8')
             else:
@@ -92,7 +117,7 @@ class MyDefSQL:
         return err
 
     def customer_update(self, data):
-        '''单条用户相关信息修改，data是'''
+        '''单条用户相关信息修改，data是dict型的'''
         # 构造sql语句
         sql = "update 客户"
         head = "set "
@@ -144,6 +169,117 @@ class MyDefSQL:
                 if i:
                     sql = sql + ' and'
                 sql = sql + ' ' + key.encode('utf-8') + '='
+                if value.isdigit():
+                    sql = sql + value.encode('utf-8')
+                else:
+                    sql = sql + "'" + value.encode('utf-8') + "'"
+            print("execute sql is: " + sql)
+            # 错误信息
+            [data,err] = self.execute(sql)
+            print("err is: " + err)
+        return data
+
+    
+    # account，涉及多个表，故采用组合语句的方式
+    def showaccount(self, issaving):
+        '''账户管理，issaving为True表明是储蓄账户'''
+        sql = "select 账户.账户号,支行名称,余额,开户日期,客户身份证号,最近访问日期,"
+        if issaving:
+            head = "利率,货币类型"
+            body = "from 账户,储蓄账户 where 账户.账户号=储蓄账户.账户号"
+        else:
+            head = "透支额"
+            body = "from 账户,支票账户 where 账户.账户号=支票账户.账户号"
+        sql = sql + head + ' ' + body
+        res = self.execute(sql)[0]
+        return res
+
+    def account_insert(self, data, issaving):
+        '''单账户开户，data是dict型的；涉及多个表操作，故需要组合查询'''
+        # 构造sql语句
+        sqls = []
+        # 插仅一种账户约束
+        sql = "insert into `客户在银行的账户` values ('" + data[u"支行名称"].encode('utf-8') + "','" + data[u"客户身份证号"].encode('utf-8') + "',"
+        if issaving:
+            sql = sql + "TRUE" + ")"
+        else:
+            sql = sql + "FALSE" + ")"
+        sqls.append(sql)
+        # 插账户
+        sql = "insert into `账户`"
+        head = "("
+        body = "values ("
+        i = 0
+        for key,value in data.items():
+            if key.encode('utf-8')=="利率" or key.encode('utf-8')=="货币类型" or key.encode('utf-8')=="透支额":
+                continue
+            if i:
+                head = head + ','
+                body = body + ','
+            i = i + 1
+            head = head + key.encode('utf-8')
+            # 时间设置为当前时间
+            if key.encode('utf-8')=="开户日期" or key.encode('utf-8')=="最近访问日期":
+                body = body + 'CURDATE()'
+                continue
+            if value.isdigit():
+                body = body + value.encode('utf-8')
+            else:
+                body = body + "'" + value.encode('utf-8') + "'"
+        head = head + ")"
+        body = body + ")"
+        sql = sql + ' ' + head + ' ' + body
+        sqls.append(sql)
+        # 插具体账户
+        if issaving:
+            sql = "insert into `储蓄账户` values (" + data[u"账户.账户号"].encode('utf-8') + ',' + data[u"利率"].encode('utf-8') + ",'" + data[u"货币类型"].encode('utf-8') + "')"
+        else:
+            sql = "insert into `支票账户` values (" + data[u"账户.账户号"].encode('utf-8') + ',' + data[u"透支额"].encode('utf-8') + ")"
+        sqls.append(sql)
+        print("execute sql is:")
+        for sql in sqls:
+            print(sql)
+        # 错误信息
+        err = self.execute_all(sqls)[1]
+        print("err is: " + err)
+        return err
+
+    def account_update(self, data, issaving):
+        '''单账户相关信息修改，data是dict型的'''
+        # 构造sql语句
+        sqls = []
+        sql = "update 账户"
+        
+        print("execute sql is: " + sql)
+        # 错误信息
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
+
+    def account_del(self, data, issaving):
+        '''单账户相关信息删除，data是dict型的'''
+        # 构造删除语句
+        sql = "delete from 客户 where 客户身份证号="
+        print("execute sql is: " + sql)
+        # 错误信息
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
+
+    def account_search(self, searchinfo, issaving):
+        if len(searchinfo)==0:
+            data = self.showaccount(issaving)
+        else:
+            sql = "select 账户.账户号,支行名称,余额,开户日期,客户身份证号,最近访问日期,"
+            if issaving:
+                head = "利率,货币类型"
+                body = "from 账户,储蓄账户 where 账户.账户号=储蓄账户.账户号"
+            else:
+                head = "透支额"
+                body = "from 账户,支票账户 where 账户.账户号=支票账户.账户号"
+            sql = sql + head + ' ' + body
+            for key,value in searchinfo.items():
+                sql = sql + ' and ' + key.encode('utf-8') + '='
                 if value.isdigit():
                     sql = sql + value.encode('utf-8')
                 else:

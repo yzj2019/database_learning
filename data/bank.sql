@@ -22,19 +22,6 @@ create table 借贷
    primary key (贷款号, 客户身份证号)
 );
 
-/*==============================================================*/
-/* Table: 储蓄账户                                                  */
-/*==============================================================*/
-create table 储蓄账户
-(
-   账户号                  numeric(8,0) not null,
-   支行名称                 varchar(128),
-   余额                   float(8,2),
-   开户日期                 date,
-   利率                   float,
-   货币类型                 varchar(32),
-   primary key (账户号)
-);
 
 /*==============================================================*/
 /* Table: 员工                                                    */
@@ -79,15 +66,16 @@ create table 客户在银行的账户
    primary key (支行名称, 客户身份证号, 账户类型)
 );
 
+
 /*==============================================================*/
-/* Table: 持有                                                    */
+/* Table: 储蓄账户                                                  */
 /*==============================================================*/
-create table 持有
+create table 储蓄账户
 (
    账户号                  numeric(8,0) not null,
-   客户身份证号               numeric(18,0) not null,
-   最近访问日期               date,
-   primary key (账户号, 客户身份证号)
+   利率                   float,
+   货币类型                 varchar(32),
+   primary key (账户号)
 );
 
 /*==============================================================*/
@@ -96,9 +84,6 @@ create table 持有
 create table 支票账户
 (
    账户号                  numeric(8,0) not null,
-   支行名称                 varchar(128),
-   余额                   float(8,2),
-   开户日期                 date,
    透支额                  float(8,2),
    primary key (账户号)
 );
@@ -135,6 +120,8 @@ create table 账户
    支行名称                 varchar(128) not null,
    余额                   float(8,2),
    开户日期                 date,
+   客户身份证号               numeric(18,0) not null,
+   最近访问日期               date,
    primary key (账户号)
 );
 
@@ -191,12 +178,6 @@ alter table 客户在银行的账户 add constraint FK_Relationship_6 foreign ke
       references 支行 (支行名称) on delete restrict on update restrict;
 
 alter table 客户在银行的账户 add constraint FK_Relationship_7 foreign key (客户身份证号)
-      references 客户 (客户身份证号) on delete restrict on update restrict;
-
-alter table 持有 add constraint FK_持有 foreign key (账户号)
-      references 账户 (账户号) on delete restrict on update restrict;
-
-alter table 持有 add constraint FK_持有2 foreign key (客户身份证号)
       references 客户 (客户身份证号) on delete restrict on update restrict;
 
 alter table 支票账户 add constraint FK_账户类型2 foreign key (账户号)
