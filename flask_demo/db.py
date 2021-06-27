@@ -266,7 +266,7 @@ class MyDefSQL:
         if issaving:
             sql = "update `储蓄账户` set 利率=" + data[u"利率"].encode('utf-8') + ",货币类型='" + data[u"货币类型"].encode('utf-8') + "' where 账户号=" + data[u"账户.账户号"].encode('utf-8')
         else:
-            sql = "update `储蓄账户` set 透支额=" + data[u"透支额"].encode('utf-8') + " where 账户号=" + data[u"账户.账户号"].encode('utf-8')
+            sql = "update `支票账户` set 透支额=" + data[u"透支额"].encode('utf-8') + " where 账户号=" + data[u"账户.账户号"].encode('utf-8')
         sqls.append(sql)
         # 判断需不需要更新支行资产
         pre_balance = self.execute("select 余额 from 账户 where 账户号=" + data[u"账户.账户号"].encode('utf-8'))[0][0][0]
@@ -299,7 +299,7 @@ class MyDefSQL:
         if issaving:
             sql = "delete from `储蓄账户` where 账户号=" + data[u"账户.账户号"].encode('utf-8')
         else:
-            sql = "delete from `支票账户` values 账户号=" + data[u"账户.账户号"].encode('utf-8')
+            sql = "delete from `支票账户` where 账户号=" + data[u"账户.账户号"].encode('utf-8')
         sqls.append(sql)
         # 最后删除账户，因为有外键依赖它（其实组合操作中顺序没区别了就）
         sql = "delete from `账户`"
