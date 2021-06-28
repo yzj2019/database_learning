@@ -170,13 +170,12 @@ def saving():
         function = datas["function"]
         datas = datas["inputdata"]
         # print(function)
-        # print(datas[0][u"客户身份证号"])
         if function == "delete":
             res = {'info':'删除成功！', 'errs':[]}
             for data in datas:
                 err = db.account_del(data, True)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"账户.账户号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "删除失败！"
             return json.dumps(res)
@@ -185,7 +184,7 @@ def saving():
             for data in datas:
                 err = db.account_insert(data, True)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"账户.账户号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "插入失败！"
             return json.dumps(res)
@@ -194,7 +193,7 @@ def saving():
             for data in datas:
                 err = db.account_update(data, True)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"账户.账户号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "修改失败！"
             return json.dumps(res)
@@ -234,13 +233,12 @@ def checking():
         function = datas["function"]
         datas = datas["inputdata"]
         # print(function)
-        # print(datas[0][u"客户身份证号"])
         if function == "delete":
             res = {'info':'删除成功！', 'errs':[]}
             for data in datas:
                 err = db.account_del(data, False)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"账户.账户号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "删除失败！"
             return json.dumps(res)
@@ -249,7 +247,7 @@ def checking():
             for data in datas:
                 err = db.account_insert(data, False)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"账户.账户号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "插入失败！"
             return json.dumps(res)
@@ -258,13 +256,77 @@ def checking():
             for data in datas:
                 err = db.account_update(data, False)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"账户.账户号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "修改失败！"
             return json.dumps(res)
 
     else:
         return render_template("account_checking.html", rows = tabs, dbname=session['database'])
+
+
+# 贷款管理页面
+@app.route("/loan", methods=(["GET", "POST"]))
+def loan():
+    if 'username' in session:
+        db = MyDefSQL(session['username'], session['password'], 
+                        session['ipaddr'], session['database'])
+        err = db.login()
+    else:
+        return redirect(url_for('login'))
+    
+    tabs = db.showloan()
+    if tabs==None:
+        tabs=""
+
+    if request.method == "POST":
+        if 'search' in request.form:
+            # 是由search表单提交的post请求
+            searchinfo = {}
+            for key,value in request.form.items():
+                # 注意这里key和value仍然是unicode编码，统一在db.py中处理！
+                if len(value) != 0 and key!='search':
+                    # 做第一层过滤，使得可以表单中某块信息不填
+                    searchinfo[key] = value
+            tabs = db.loan_search(searchinfo)
+            return render_template("loan.html", rows = tabs, dbname=session['database'])
+        # 其它删改查需求，是由Ajax提交的post
+        datas = json.loads(request.get_data(as_text=True))
+        function = datas["function"]
+        datas = datas["inputdata"]
+        # print(function)
+        if function == "delete":
+            res = {'info':'删除成功！', 'errs':[]}
+            for data in datas:
+                err = db.loan_del(data)
+                if err != '0':
+                    res['errs'].append([data[u"客户身份证号"],err])
+            if len(res['errs']) != 0:
+                res['info'] = "删除失败！"
+            return json.dumps(res)
+        elif function == "insert":
+            res = {'info':'插入成功！', 'errs':[]}
+            for data in datas:
+                err = db.loan_insert(data)
+                if err != '0':
+                    res['errs'].append([data[u"客户身份证号"],err])
+            if len(res['errs']) != 0:
+                res['info'] = "插入失败！"
+            return json.dumps(res)
+        elif function == "update":
+            # 沿用了update-button的脚本
+            res = {'info':'贷款发放成功！', 'errs':[]}
+            for data in datas:
+                err = db.loan_release(data)
+                if err != '0':
+                    res['errs'].append([data[u"客户身份证号"],err])
+            if len(res['errs']) != 0:
+                res['info'] = "贷款发放失败！"
+            return json.dumps(res)
+
+    else:
+        return render_template("loan.html", rows = tabs, dbname=session['database'])
+
 
 
 # 测试新html页面

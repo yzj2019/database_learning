@@ -12,15 +12,6 @@ create database db_lab3;
 
 use db_lab3;
 
-/*==============================================================*/
-/* Table: 借贷                                                    */
-/*==============================================================*/
-create table 借贷
-(
-   贷款号                  numeric(8,0) not null,
-   客户身份证号               numeric(18,0) not null,
-   primary key (贷款号, 客户身份证号)
-);
 
 
 /*==============================================================*/
@@ -94,7 +85,7 @@ create table 支票账户
 create table 支行
 (
    支行名称                 varchar(128) not null,
-   支行资产                 float(8,2),
+   支行资产                 float(12,2),
    primary key (支行名称)
 );
 
@@ -132,6 +123,7 @@ create table 贷款
 (
    贷款号                  numeric(8,0) not null,
    支行名称                 varchar(128) not null,
+   客户身份证号               numeric(18,0) not null,
    所贷金额                 float(8,2),
    逐次支付情况               numeric(8,0),
    primary key (贷款号)
@@ -142,11 +134,11 @@ create table 贷款
 /*==============================================================*/
 create table 贷款付款
 (
+   贷款号                  numeric(8,0) not null,
    付款码                  numeric(8,0) not null,
    付款日期                 date not null,
    付款金额                 float(8,2) not null,
-   贷款号                  numeric(8,0) not null,
-   primary key (贷款号, 付款码, 付款日期, 付款金额)
+   primary key (贷款号, 付款码)
 );
 
 /*==============================================================*/
@@ -162,11 +154,6 @@ create table 部门
    primary key (支行名称, 部门号)
 );
 
-alter table 借贷 add constraint FK_借贷 foreign key (贷款号)
-      references 贷款 (贷款号) on delete restrict on update restrict;
-
-alter table 借贷 add constraint FK_借贷2 foreign key (客户身份证号)
-      references 客户 (客户身份证号) on delete restrict on update restrict;
 
 alter table 储蓄账户 add constraint FK_账户类型 foreign key (账户号)
       references 账户 (账户号) on delete restrict on update restrict;
@@ -191,6 +178,12 @@ alter table 负责 add constraint FK_负责2 foreign key (客户身份证号)
 
 alter table 账户 add constraint FK_开户 foreign key (支行名称)
       references 支行 (支行名称) on delete restrict on update restrict;
+
+alter table 账户 add constraint FK_持有 foreign key (客户身份证号)
+      references 客户 (客户身份证号) on delete restrict on update restrict;
+
+alter table 贷款 add constraint FK_借贷 foreign key (客户身份证号)
+      references 客户 (客户身份证号) on delete restrict on update restrict;
 
 alter table 贷款 add constraint FK_发放 foreign key (支行名称)
       references 支行 (支行名称) on delete restrict on update restrict;

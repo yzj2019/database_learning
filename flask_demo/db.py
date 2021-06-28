@@ -1,6 +1,8 @@
 # coding=UTF-8
 import MySQLdb
 
+# 注意：jinja2模板只支持Unicode或ASCII码，所以需要转换到数据库支持的字符集，再执行sql语句
+
 class MyDefSQL:
     '''自定义python-MySQL连接类'''
 
@@ -348,6 +350,125 @@ class MyDefSQL:
         return data
 
 
+
+    # 贷款管理
+    def showloan(self):
+        '''贷款管理'''
+        sql = '''select 贷款号,支行名称,客户身份证号,所贷金额,逐次支付情况
+                from 贷款
+                '''
+        datas = self.execute(sql)[0]
+        res = []
+        for data in datas:
+            # 逐个根据付款个数与逐次支付情况，将末尾元素修改为贷款状态
+            l = len(data)
+            re = list(data)
+            count = self.execute("select count(付款码) from 贷款付款 where 贷款号={0}".format(data[0]))[0][0][0]
+            if int(count)==0:
+                # 未开始发放
+                re.append(u'未开始发放')
+            elif int(count)<int(re[l-1]):
+                # 发放中
+                re.append(u'发放中')
+            else:
+                # 已全部发放，需要在下面保证不会大于它
+                re.append(u'已全部发放')
+            res.append(re)
+        return res
+
+    def loan_insert(self, data):
+        '''单条贷款相关信息插入，data是dict型的'''
+        # 构造sql语句
+        sql = "insert into 贷款"
+        head = "("
+        body = "values ("
+        i = 0
+        for key,value in data.items():
+            # 迭代dict的key和value，方便构造sql语句
+            if key.encode('utf-8')=='当前状态':
+                # 贷款插入的时候，都是未发放的状态
+                continue
+            if i:
+                head = head + ','
+                body = body + ','
+            i = i + 1
+            head = head + key.encode('utf-8')
+            # 需要判断是不是字符串，来加单引号
+            if value.isdigit():
+                body = body + value.encode('utf-8')
+            else:
+                body = body + "'" + value.encode('utf-8') + "'"
+        head = head + ")"
+        body = body + ")"
+        sql = sql + ' ' + head + ' ' + body
+        print("execute sql is: " + sql)
+        # 错误信息
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
+
+    def loan_release(self, data):
+        '''单条贷款发放'''
+        # 构造sql语句
+        sql = "update 客户"
+        head = "set "
+        body = "where 客户身份证号=" + data[u"客户身份证号"].encode('utf-8')
+        i = 0
+        for key,value in data.items():
+            if i:
+                head = head + ','
+            i = i + 1
+            head = head + key.encode('utf-8') + '='
+            if value.isdigit():
+                head = head + value.encode('utf-8')
+            else:
+                head = head + "'" + value.encode('utf-8') + "'"
+        sql = sql + ' ' + head + ' ' + body
+        print("execute sql is: " + sql)
+        # 错误信息
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
+
+    def loan_del(self, data):
+        '''单条贷款相关信息删除，data是dict型的'''
+        # 构造删除语句
+        sql = "delete from 客户 where 客户身份证号=" + data[u"客户身份证号"].encode('utf-8')
+        # i = 0
+        # for key,value in data.items():
+        #     if i:
+        #         sql = sql + " and"
+        #     i = i + 1
+        #     sql = sql + ' ' + key.encode('utf-8') + "="
+        #     if value.isdigit():
+        #         sql = sql + value.encode('utf-8')
+        #     else:
+        #         sql = sql + "'" + value.encode('utf-8') + "'"
+        print("execute sql is: " + sql)
+        # 错误信息
+        err = self.execute(sql)[1]
+        print("err is: " + err)
+        return err
+
+    def loan_search(self, searchinfo):
+        if len(searchinfo)==0:
+            data = self.execute("select * from 客户")[0]
+        else:
+            sql = "select * from 客户 where"
+            i = 0
+            for key,value in searchinfo.items():
+                if i:
+                    sql = sql + ' and'
+                sql = sql + ' ' + key.encode('utf-8') + '='
+                if value.isdigit():
+                    sql = sql + value.encode('utf-8')
+                else:
+                    sql = sql + "'" + value.encode('utf-8') + "'"
+            print("execute sql is: " + sql)
+            # 错误信息
+            [data,err] = self.execute(sql)
+            print("err is: " + err)
+        return data
 
     def __reduce__(self):
         '''关闭连接'''
