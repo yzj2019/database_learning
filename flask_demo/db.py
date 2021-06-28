@@ -432,21 +432,18 @@ class MyDefSQL:
 
     def loan_del(self, data):
         '''单条贷款相关信息删除，data是dict型的'''
-        # 构造删除语句
-        sql = "delete from 客户 where 客户身份证号=" + data[u"客户身份证号"].encode('utf-8')
-        # i = 0
-        # for key,value in data.items():
-        #     if i:
-        #         sql = sql + " and"
-        #     i = i + 1
-        #     sql = sql + ' ' + key.encode('utf-8') + "="
-        #     if value.isdigit():
-        #         sql = sql + value.encode('utf-8')
-        #     else:
-        #         sql = sql + "'" + value.encode('utf-8') + "'"
-        print("execute sql is: " + sql)
+        sqls = []
+        # 删除贷款付款信息
+        sql = "delete from 贷款付款 where 贷款号=" + data[u"贷款号"].encode('utf-8')
+        sqls.append(sql)
+        # 删除贷款信息
+        sql = "delete from 贷款 where 贷款号=" + data[u"贷款号"].encode('utf-8')
+        sqls.append(sql)
+        print("execute sql is:")
+        for sql in sqls:
+            print(sql)
         # 错误信息
-        err = self.execute(sql)[1]
+        err = self.execute_all(sqls)[1]
         print("err is: " + err)
         return err
 
