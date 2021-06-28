@@ -24,42 +24,16 @@
                 <form method="POST" class="form-inline" id="search-form">
                     <div class="row">
                         <div class="col form-floating">
+                            <input type="text" class="form-control" name="贷款号" id="贷款号" placeholder="*">
+                            <label>贷款号</label>
+                        </div>
+                        <div class="col form-floating">
+                            <input type="text" class="form-control" name="支行名称" id="支行名称" placeholder="*">
+                            <label>支行名称</label>
+                        </div>
+                        <div class="col form-floating">
                             <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*">
                             <label>客户身份证号</label>
-                        </div>
-                        <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户姓名" id="客户姓名" placeholder="*">
-                            <label>客户姓名</label>
-                        </div>
-                        <div class="col form-floating">
-                            <input type="tel" class="form-control" name="客户联系电话" id="客户联系电话" placeholder="*">
-                            <label>客户联系电话</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户家庭住址" id="客户家庭住址" placeholder="*">
-                            <label>客户家庭住址</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col form-floating">
-                            <input type="text" class="form-control" name="联系人姓名" id="联系人姓名" placeholder="*">
-                            <label>联系人姓名</label>
-                        </div>
-                        <div class="col form-floating">
-                            <input type="tel" class="form-control" name="联系人手机号" id="联系人手机号" placeholder="*">
-                            <label>联系人手机号</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col form-floating">
-                            <input type="email" class="form-control" name="联系人email" id="联系人email" placeholder="*">
-                            <label>联系人email</label>
-                        </div>
-                        <div class="col form-floating">
-                            <input type="text" class="form-control" name="联系人与客户的关系" id="联系人与客户的关系" placeholder="*">
-                            <label>联系人与客户的关系</label>
                         </div>
                     </div>
                     <button class="button button-glow button-border button-rounded button-primary" id="searchBtn"
@@ -116,7 +90,7 @@
             value="insert">
             插入贷款
         </button>
-        <button class="button button-glow button-border button-rounded button-primary" id="updateBtn" name="update"
+        <button class="button button-glow button-border button-rounded button-primary" id="releaseBtn" name="update"
             value="update">
             发放贷款
         </button>
@@ -135,6 +109,32 @@
     <script src="{{ url_for('static', filename='js/button.js') }}" type="text/javascript"></script>
     <!--表格行单击选中、双击输入脚本-->
     <script src="{{ url_for('static', filename='js/table.js') }}" type="text/javascript"></script>
+
+    <script>
+        $(document).ready(function () {
+            //发放贷款按钮的响应事件绑定，点击按钮为选中的行发放一次贷款
+            //$(document).ready(function(){});表明在文档完全加载好才运行
+            $("#releaseBtn").click(function () {
+                if (confirm("确认要为已经选择的行各自发放一次贷款吗？")) {
+                    var checkeddata = get_checkeddata('search-table');
+                    if (checkeddata.length == 0) return;
+                    post_json_to_server(
+                        JSON.stringify({
+                            //提交给服务器的数据
+                            //JSON.stringify()自动将中文转译为unicode编码，注意！！！
+                            inputdata: checkeddata,
+                            function: "release",
+                        }),
+                        function (reData) {
+                            //回调函数的处理方式
+                            alert(reData["info"]);
+                            location.reload();
+                        }
+                    );
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

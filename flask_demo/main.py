@@ -313,8 +313,7 @@ def loan():
             if len(res['errs']) != 0:
                 res['info'] = "插入失败！"
             return json.dumps(res)
-        elif function == "update":
-            # 沿用了update-button的脚本
+        elif function == "release":
             res = {'info':'贷款发放成功！', 'errs':[]}
             for data in datas:
                 err = db.loan_release(data)

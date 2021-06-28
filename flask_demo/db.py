@@ -369,7 +369,7 @@ class MyDefSQL:
                 re.append(u'未开始发放')
             elif int(count)<int(re[l-1]):
                 # 发放中
-                re.append(u'发放中')
+                re.append(u'发放中，已发放次数={0}'.format(int(count)))
             else:
                 # 已全部发放，需要在下面保证不会大于它
                 re.append(u'已全部发放')
@@ -409,30 +409,45 @@ class MyDefSQL:
 
     def loan_release(self, data):
         '''单条贷款发放'''
-        # 构造sql语句
-        sql = "update 客户"
-        head = "set "
-        body = "where 客户身份证号=" + data[u"客户身份证号"].encode('utf-8')
-        i = 0
-        for key,value in data.items():
-            if i:
-                head = head + ','
-            i = i + 1
-            head = head + key.encode('utf-8') + '='
-            if value.isdigit():
-                head = head + value.encode('utf-8')
-            else:
-                head = head + "'" + value.encode('utf-8') + "'"
-        sql = sql + ' ' + head + ' ' + body
-        print("execute sql is: " + sql)
+        # 已经全部发放的不可继续发放
+        count = self.execute("select count(付款码) from 贷款付款 where 贷款号="+data[u"贷款号"].encode('utf-8'))[0][0][0]
+        num = self.execute("select 逐次支付情况 from 贷款 where 贷款号=" + data[u"贷款号"].encode('utf-8'))[0][0][0]
+        count=int(count)
+        num=int(num)
+        if count==num:
+            return '-1'
+        # 查询贷款的所贷金额和逐次支付情况
+        sql = "select 所贷金额,逐次支付情况 from 贷款 where 贷款号=" + data[u"贷款号"].encode('utf-8')
+        res = self.execute(sql)[0][0]
+        release_amount = int(res[0])/int(res[1])  # 单次发放的金额，默认均匀发放
+        # print("data is {0}".format(release_amount))
+        sqls = []
+        # 插入贷款付款
+        sql = "insert into 贷款付款 values (" + data[u"贷款号"].encode('utf-8') + ',' + str(count+1) + ',' + 'CURDATE()' + ',' + str(release_amount) + ')'
+        sqls.append(sql)
+        # 相应修改银行资产
+        pre_assets = self.execute("select 支行资产 from 支行 where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'")[0][0][0]
+        new_assets = pre_assets - float(release_amount)
+        sql = "update 支行 set 支行资产=" + str(new_assets) + " where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'"
+        sqls.append(sql)
+        print("execute sql is:")
+        for sql in sqls:
+            print(sql)
         # 错误信息
-        err = self.execute(sql)[1]
+        err = self.execute_all(sqls)[1]
         print("err is: " + err)
         return err
 
     def loan_del(self, data):
         '''单条贷款相关信息删除，data是dict型的'''
         sqls = []
+        # 处于发放中状态的贷款记录不允许删除
+        count = self.execute("select count(付款码) from 贷款付款 where 贷款号="+data[u"贷款号"].encode('utf-8'))[0][0][0]
+        num = self.execute("select 逐次支付情况 from 贷款 where 贷款号=" + data[u"贷款号"].encode('utf-8'))[0][0][0]
+        count=int(count)
+        num=int(num)
+        if count>0 and count<num:
+            return '-1'
         # 删除贷款付款信息
         sql = "delete from 贷款付款 where 贷款号=" + data[u"贷款号"].encode('utf-8')
         sqls.append(sql)
@@ -449,9 +464,9 @@ class MyDefSQL:
 
     def loan_search(self, searchinfo):
         if len(searchinfo)==0:
-            data = self.execute("select * from 客户")[0]
+            res = self.showloan()
         else:
-            sql = "select * from 客户 where"
+            sql = "select 贷款号,支行名称,客户身份证号,所贷金额,逐次支付情况 from 贷款 where"
             i = 0
             for key,value in searchinfo.items():
                 if i:
@@ -463,9 +478,25 @@ class MyDefSQL:
                     sql = sql + "'" + value.encode('utf-8') + "'"
             print("execute sql is: " + sql)
             # 错误信息
-            [data,err] = self.execute(sql)
+            [datas,err] = self.execute(sql)
             print("err is: " + err)
-        return data
+            res = []
+            for data in datas:
+                # 逐个根据付款个数与逐次支付情况，将末尾元素修改为贷款状态
+                l = len(data)
+                re = list(data)
+                count = self.execute("select count(付款码) from 贷款付款 where 贷款号={0}".format(data[0]))[0][0][0]
+                if int(count)==0:
+                    # 未开始发放
+                    re.append(u'未开始发放')
+                elif int(count)<int(re[l-1]):
+                    # 发放中
+                    re.append(u'发放中，已发放次数={0}'.format(int(count)))
+                else:
+                    # 已全部发放，需要在下面保证不会大于它
+                    re.append(u'已全部发放')
+                res.append(re)
+        return res
 
     def __reduce__(self):
         '''关闭连接'''
