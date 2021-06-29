@@ -24,11 +24,13 @@
                 <form method="POST" class="form-inline" id="search-form">
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
+                            <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*"
+                                onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户身份证号</label>
                         </div>
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户姓名" id="客户姓名" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
+                            <input type="text" class="form-control" name="客户姓名" id="客户姓名" placeholder="*"
+                                onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户姓名</label>
                         </div>
                         <div class="col form-floating">
@@ -38,13 +40,15 @@
                     </div>
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户家庭住址" id="客户家庭住址" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
+                            <input type="text" class="form-control" name="客户家庭住址" id="客户家庭住址" placeholder="*"
+                                onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户家庭住址</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="联系人姓名" id="联系人姓名" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
+                            <input type="text" class="form-control" name="联系人姓名" id="联系人姓名" placeholder="*"
+                                onkeyup="value=value.replace(/[\']/,'*')">
                             <label>联系人姓名</label>
                         </div>
                         <div class="col form-floating">
@@ -58,7 +62,8 @@
                             <label>联系人email</label>
                         </div>
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="联系人与客户的关系" id="联系人与客户的关系" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
+                            <input type="text" class="form-control" name="联系人与客户的关系" id="联系人与客户的关系" placeholder="*"
+                                onkeyup="value=value.replace(/[\']/,'*')">
                             <label>联系人与客户的关系</label>
                         </div>
                     </div>
@@ -141,6 +146,79 @@
     <script src="{{ url_for('static', filename='js/button.js') }}" type="text/javascript"></script>
     <!--表格行单击选中、双击输入脚本-->
     <script src="{{ url_for('static', filename='js/table.js') }}" type="text/javascript"></script>
+
+    <!--插入按钮事件绑定-->
+    <script>
+        function insertBtn_react(reData) {
+            //插入按钮回调函数
+            alert(reData["info"]);
+            info = "客户身份证号，问题：\n";
+            for(let err of reData['errs']){
+                info = info + err[0] + '，'
+                switch(err[1]){
+                    case '1062': info = info + '主键重复\n'; break;
+                    case '1064': info = info + '名称不合法\n'; break;
+                    default: info = info + '未知错误\n';
+                }
+            }
+            if (reData['errs'].length!=0)
+                alert(info);
+            location.reload();
+        }
+        $(document).ready(function () {
+            //插入按钮的响应事件绑定，点击按钮插入选中的行
+            //$(document).ready(function(){});表明在文档完全加载好才运行
+            insertBtn_event(insertBtn_react);
+        });
+    </script>
+
+    <!--更新按钮事件绑定-->
+    <script>
+        function updateBtn_react(reData) {
+            //更新按钮回调函数
+            alert(reData["info"]);
+            info = "客户身份证号，问题：\n";
+            for(let err of reData['errs']){
+                info = info + err[0] + '，'
+                switch(err[1]){
+                    case '1062': info = info + '主键重复\n'; break;
+                    case '1064': info = info + '名称不合法\n'; break;
+                    default: info = info + '未知错误\n';
+                }
+            }
+            if (reData['errs'].length!=0)
+                alert(info);
+            location.reload();
+        }
+        $(document).ready(function () {
+            //更新按钮的响应事件绑定，点击按钮更新选中的行
+            updateBtn_event(updateBtn_react);
+        });
+    </script>
+
+    <!--删除按钮事件绑定-->
+    <script>
+        function deleteBtn_react(reData) {
+            //删除按钮回调函数
+            alert(reData["info"]);
+            info = "客户身份证号，问题：\n";
+            for(let err of reData['errs']){
+                info = info + err[0] + '，'
+                switch(err[1]){
+                    case '1062': info = info + '主键重复\n'; break;
+                    case '1451': info = info + '客户仍有关联的账户或贷款记录\n'; break;
+                    default: info = info + '未知错误\n';
+                }
+            }
+            if (reData['errs'].length!=0)
+                alert(info);
+            location.reload();
+        }
+        $(document).ready(function () {
+            //删除按钮的响应事件绑定，点击按钮删除选中的行
+            deleteBtn_event(deleteBtn_react);
+        });
+    </script>
 </body>
 
 </html>

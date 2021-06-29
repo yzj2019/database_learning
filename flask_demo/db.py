@@ -244,6 +244,8 @@ class MyDefSQL:
             # 认为余额为正总代表银行欠用户钱
             pre_assets = self.execute("select 支行资产 from 支行 where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'")[0][0][0]
             new_assets = pre_assets + float(data[u"余额"].encode('utf-8'))
+            if new_assets<0:
+                return '-1'
             sql = "update 支行 set 支行资产=" + str(new_assets) + " where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'"
             sqls.append(sql)
         print("execute sql is:")
@@ -277,6 +279,8 @@ class MyDefSQL:
             # 更新了余额，故需要相应更新支行资产
             pre_assets = self.execute("select 支行资产 from 支行 where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'")[0][0][0]
             new_assets = pre_assets + float(data[u"余额"].encode('utf-8')) - float(pre_balance)
+            if new_assets<0:
+                return '-1'
             sql = "update 支行 set 支行资产=" + str(new_assets) + " where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'"
             sqls.append(sql)
         print("execute sql is:")
@@ -316,6 +320,8 @@ class MyDefSQL:
             # 尚有余额，需要在销户时结清
             pre_assets = self.execute("select 支行资产 from 支行 where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'")[0][0][0]
             new_assets = pre_assets - float(pre_balance)
+            if new_assets<0:
+                return '-1'
             sql = "update 支行 set 支行资产=" + str(new_assets) + " where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'"
             sqls.append(sql)
         print("execute sql is:")
@@ -416,7 +422,7 @@ class MyDefSQL:
         count=int(count)
         num=int(num)
         if count==num:
-            return '-1'
+            return '-3'
         # 查询贷款的所贷金额和逐次支付情况
         sql = "select 所贷金额,逐次支付情况 from 贷款 where 贷款号=" + data[u"贷款号"].encode('utf-8')
         res = self.execute(sql)[0][0]
@@ -429,6 +435,8 @@ class MyDefSQL:
         # 相应修改银行资产
         pre_assets = self.execute("select 支行资产 from 支行 where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'")[0][0][0]
         new_assets = pre_assets - float(release_amount)
+        if new_assets<0:
+            return '-1'
         sql = "update 支行 set 支行资产=" + str(new_assets) + " where 支行名称='" + data[u"支行名称"].encode('utf-8') + "'"
         sqls.append(sql)
         print("execute sql is:")
@@ -448,7 +456,7 @@ class MyDefSQL:
         count=int(count)
         num=int(num)
         if count>0 and count<num:
-            return '-1'
+            return '-2'
         # 删除贷款付款信息
         sql = "delete from 贷款付款 where 贷款号=" + data[u"贷款号"].encode('utf-8')
         sqls.append(sql)

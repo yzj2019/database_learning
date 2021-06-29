@@ -300,7 +300,7 @@ def loan():
             for data in datas:
                 err = db.loan_del(data)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"贷款号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "删除失败！"
             return json.dumps(res)
@@ -309,7 +309,7 @@ def loan():
             for data in datas:
                 err = db.loan_insert(data)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"贷款号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "插入失败！"
             return json.dumps(res)
@@ -318,7 +318,7 @@ def loan():
             for data in datas:
                 err = db.loan_release(data)
                 if err != '0':
-                    res['errs'].append([data[u"客户身份证号"],err])
+                    res['errs'].append([data[u"贷款号"],err])
             if len(res['errs']) != 0:
                 res['info'] = "贷款发放失败！"
             return json.dumps(res)
