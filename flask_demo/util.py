@@ -3,7 +3,7 @@ from dateutil import rrule
 from datetime import datetime
 
 def GetBetweenMonth(start, end):
-    '''获取从start开始到end之间的所有的月份；start传入的是datetime类型，返回的是datetime的list'''
+    '''获取从start开始到end之间的所有的年份-月份；start传入的是datetime类型，返回的是datetime的list'''
     res = []
     for dt in rrule.rrule(rrule.MONTHLY,
                       dtstart=start,
@@ -12,9 +12,18 @@ def GetBetweenMonth(start, end):
     # print(res)
     return res
 
-def GetMonth2Quarter(monthlist):
-    '''获取monthlist中month到quarter字串的映射'''
-    pass
+def GetBetweenQuarter(start, end):
+    '''获取从start开始到end之间的所有的年份-季度；start传入的是datetime类型，返回的是datetime的list'''
+    months = GetBetweenMonth(start, end)
+    res = []
+    for month in months:
+        mon_date = datetime.strptime(month, '%Y-%m')
+        quarter = (mon_date.month-1) / 3 + 1
+        re = str(mon_date.year) + '-' + str(quarter)
+        if len(res)==0 or res[len(res)-1]!=re:
+            res.append(re)
+    # print(res)
+    return res
 
 def GetBetweenYear(start, end):
     '''获取从start开始到end之间的所有的年份；start传入的是datetime类型，返回的是datetime的list'''
@@ -33,4 +42,5 @@ if __name__ == "__main__":
     b = datetime.strptime(b, '%Y-%m-%d')
 
     GetBetweenMonth(a,b)
+    GetBetweenQuarter(a,b)
     GetBetweenYear(a,b)

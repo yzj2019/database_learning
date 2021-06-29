@@ -556,7 +556,7 @@ class MyDefSQL:
         print("mindate is {0}, maxdate is {1}".format(min_date, max_date))
         # print(type(max_date))
         # 获取所有月份字串list
-        between_months = GetBetweenMonth(min_date, max_date)
+        between_quarters = GetBetweenQuarter(min_date, max_date)
         res = []
         subbanks = self.execute('''select 支行名称 from 支行''')[0]
         for subbank in subbanks:
@@ -564,18 +564,18 @@ class MyDefSQL:
             re = {}
             re['name'] = subbank[0]
             datas = []
-            for month in between_months:
+            for quarter in between_quarters:
                 # 按月份查
                 data = []
-                data.append(month)
+                data.append(quarter)
                 # 查该月账户开户人次
-                sql = "select count(账户号) from 账户 where DATE_FORMAT(开户日期, '%Y-%m' ) = '"+ month +"'"
+                sql = "select count(账户号) from 账户 where concat(DATE_FORMAT(开户日期, '%Y'),'-',QUARTER(开户日期)) = '"+ quarter +"'"
                 print("sql is: "+sql)
                 account_num = self.execute(sql)[0][0][0]
                 print("res is: {0}".format(account_num))
                 data.append(account_num)
                 # 查该月贷款发放金额数
-                sql = "select sum(付款金额) from 贷款付款 where DATE_FORMAT(付款日期, '%Y-%m' ) = '"+ month +"'"
+                sql = "select sum(付款金额) from 贷款付款 where concat(DATE_FORMAT(付款日期, '%Y'),'-',QUARTER(付款日期)) = '"+ quarter +"'"
                 print("sql is: "+sql)
                 loanrelease_sum = self.execute(sql)[0][0][0]
                 print("res is: {0}".format(loanrelease_sum))
@@ -583,6 +583,7 @@ class MyDefSQL:
                 datas.append(data)
             re['data'] = datas
             res.append(re)
+        # 按月处理成季度
         return res
 
     def statistic_year(self):
