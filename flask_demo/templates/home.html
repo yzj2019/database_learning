@@ -38,8 +38,14 @@
         <li class="nav-item">
           <a class="nav-link" href="loan" target="iframe">贷款管理</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="statistic" target="iframe">业务统计</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#!" id="statistic" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">业务统计</a>
+          <div class="dropdown-menu dropdown-menu-left" style="min-width:100%;" aria-labelledby="dropdownExample">
+            <a class="dropdown-item" href="statistic/month" target="iframe">按月</a>
+            <a class="dropdown-item" href="statistic/quarter" target="iframe">按季</a>
+            <a class="dropdown-item" href="statistic/year" target="iframe">按年</a>
+          </div>
         </li>
 
       </ul>
@@ -111,14 +117,16 @@
     });
     function dropdownOpen() {
       var $dropdownLi = $('li.dropdown');
-      var $dropdowna = $dropdownLi.find('.dropdown-toggle')
-      var $dropdownm = $dropdownLi.find('.dropdown-menu')
       $dropdownLi.mouseover(function () {
         $(this).addClass('show');
+        var $dropdowna = $(this).find('.dropdown-toggle')
+        var $dropdownm = $(this).find('.dropdown-menu')
         $dropdownm.addClass('show');
         $dropdowna.attr('aria-expanded', "true");
       }).mouseout(function () {
         $(this).removeClass('show');
+        var $dropdowna = $(this).find('.dropdown-toggle')
+        var $dropdownm = $(this).find('.dropdown-menu')
         $dropdownm.removeClass('show');
         $dropdowna.attr('aria-expanded', "false");
       });

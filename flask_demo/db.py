@@ -1,5 +1,6 @@
 # coding=UTF-8
 import MySQLdb
+from util import *
 
 # 注意：jinja2模板只支持Unicode或ASCII码，所以需要转换到数据库支持的字符集，再执行sql语句
 
@@ -497,6 +498,135 @@ class MyDefSQL:
                     re.append(u'已全部发放')
                 res.append(re)
         return res
+
+
+
+    # 业务统计
+    def statistic_month(self):
+        '''返回业务的统计信息，返回dict型，基本全是后端处理；按月'''
+        # 获取日期区间
+        min_date = self.execute('''select least(date1,date2) from
+                                (select min(开户日期) as date1 from 账户) table1,
+                                (select min(付款日期) as date2 from 贷款付款) table2
+                                ''')[0][0][0]
+        max_date = self.execute("select CURDATE()")[0][0][0]
+        print("mindate is {0}, maxdate is {1}".format(min_date, max_date))
+        # print(type(max_date))
+        # 获取所有月份字串list
+        between_months = GetBetweenMonth(min_date, max_date)
+        res = []
+        subbanks = self.execute('''select 支行名称 from 支行''')[0]
+        for subbank in subbanks:
+            # 对每个支行，逐个取
+            re = {}
+            re['name'] = subbank[0]
+            datas = []
+            for month in between_months:
+                # 按月份查
+                data = []
+                data.append(month)
+                # 查该月账户开户人次
+                sql = "select count(账户号) from 账户 where DATE_FORMAT(开户日期, '%Y-%m' ) = '"+ month +"'"
+                print("sql is: "+sql)
+                account_num = self.execute(sql)[0][0][0]
+                print("res is: {0}".format(account_num))
+                data.append(account_num)
+                # 查该月贷款发放金额数
+                sql = "select sum(付款金额) from 贷款付款 where DATE_FORMAT(付款日期, '%Y-%m' ) = '"+ month +"'"
+                print("sql is: "+sql)
+                loanrelease_sum = self.execute(sql)[0][0][0]
+                print("res is: {0}".format(loanrelease_sum))
+                data.append(loanrelease_sum)
+                datas.append(data)
+            re['data'] = datas
+            res.append(re)
+        return res
+        
+                                
+        
+
+    def statistic_quarter(self):
+        '''返回业务的统计信息，返回dict型，基本全是后端处理；按季度'''
+        # 获取日期区间
+        min_date = self.execute('''select least(date1,date2) from
+                                (select min(开户日期) as date1 from 账户) table1,
+                                (select min(付款日期) as date2 from 贷款付款) table2
+                                ''')[0][0][0]
+        max_date = self.execute("select CURDATE()")[0][0][0]
+        print("mindate is {0}, maxdate is {1}".format(min_date, max_date))
+        # print(type(max_date))
+        # 获取所有月份字串list
+        between_months = GetBetweenMonth(min_date, max_date)
+        res = []
+        subbanks = self.execute('''select 支行名称 from 支行''')[0]
+        for subbank in subbanks:
+            # 对每个支行，逐个取
+            re = {}
+            re['name'] = subbank[0]
+            datas = []
+            for month in between_months:
+                # 按月份查
+                data = []
+                data.append(month)
+                # 查该月账户开户人次
+                sql = "select count(账户号) from 账户 where DATE_FORMAT(开户日期, '%Y-%m' ) = '"+ month +"'"
+                print("sql is: "+sql)
+                account_num = self.execute(sql)[0][0][0]
+                print("res is: {0}".format(account_num))
+                data.append(account_num)
+                # 查该月贷款发放金额数
+                sql = "select sum(付款金额) from 贷款付款 where DATE_FORMAT(付款日期, '%Y-%m' ) = '"+ month +"'"
+                print("sql is: "+sql)
+                loanrelease_sum = self.execute(sql)[0][0][0]
+                print("res is: {0}".format(loanrelease_sum))
+                data.append(loanrelease_sum)
+                datas.append(data)
+            re['data'] = datas
+            res.append(re)
+        return res
+
+    def statistic_year(self):
+        '''返回业务的统计信息，返回dict型，基本全是后端处理；按年'''
+        # 获取日期区间
+        min_date = self.execute('''select least(date1,date2) from
+                                (select min(开户日期) as date1 from 账户) table1,
+                                (select min(付款日期) as date2 from 贷款付款) table2
+                                ''')[0][0][0]
+        max_date = self.execute("select CURDATE()")[0][0][0]
+        print("mindate is {0}, maxdate is {1}".format(min_date, max_date))
+        # print(type(max_date))
+        # 获取所有月份字串list
+        between_years = GetBetweenYear(min_date, max_date)
+        res = []
+        subbanks = self.execute('''select 支行名称 from 支行''')[0]
+        for subbank in subbanks:
+            # 对每个支行，逐个取
+            re = {}
+            re['name'] = subbank[0]
+            datas = []
+            for year in between_years:
+                # 按月份查
+                data = []
+                data.append(year)
+                # 查该月账户开户人次
+                sql = "select count(账户号) from 账户 where DATE_FORMAT(开户日期, '%Y' ) = '"+ year +"'"
+                print("sql is: "+sql)
+                account_num = self.execute(sql)[0][0][0]
+                print("res is: {0}".format(account_num))
+                data.append(account_num)
+                # 查该月贷款发放金额数
+                sql = "select sum(付款金额) from 贷款付款 where DATE_FORMAT(付款日期, '%Y' ) = '"+ year +"'"
+                print("sql is: "+sql)
+                loanrelease_sum = self.execute(sql)[0][0][0]
+                print("res is: {0}".format(loanrelease_sum))
+                data.append(loanrelease_sum)
+                datas.append(data)
+            re['data'] = datas
+            res.append(re)
+        return res
+
+
+
 
     def __reduce__(self):
         '''关闭连接'''

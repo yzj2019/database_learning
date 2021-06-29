@@ -328,6 +328,51 @@ def loan():
 
 
 
+# 业务统计
+# 按月
+@app.route("/statistic/month")
+def month():
+    if 'username' in session:
+        db = MyDefSQL(session['username'], session['password'], 
+                        session['ipaddr'], session['database'])
+        err = db.login()
+    else:
+        return redirect(url_for('login'))
+    
+    tabs = db.statistic_month()
+
+    return render_template("statistic.html", how = u'月份', rows = tabs, dbname=session['database'])
+
+# 按季度
+@app.route("/statistic/quarter")
+def quarter():
+    if 'username' in session:
+        db = MyDefSQL(session['username'], session['password'], 
+                        session['ipaddr'], session['database'])
+        err = db.login()
+    else:
+        return redirect(url_for('login'))
+    
+    tabs = db.statistic_quarter()
+
+    return render_template("statistic.html", how = u'季度', rows = tabs, dbname=session['database'])
+
+# 按年
+@app.route("/statistic/year")
+def year():
+    if 'username' in session:
+        db = MyDefSQL(session['username'], session['password'], 
+                        session['ipaddr'], session['database'])
+        err = db.login()
+    else:
+        return redirect(url_for('login'))
+    
+    tabs = db.statistic_year()
+
+    return render_template("statistic.html", how = u'年份', rows = tabs, dbname=session['database'])
+
+
+
 # 测试新html页面
 @app.route("/test")
 def test():

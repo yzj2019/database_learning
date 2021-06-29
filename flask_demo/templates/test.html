@@ -166,15 +166,19 @@
         <table class="table table-striped">
           <thead>
             <tr>
-              <th style="width: 50%"> Table Name </th>
-              <th style="width: 50%"> Row Count</th>
+              <th> test </th>
+              <th> Table Name </th>
+              <th> Row Count</th>
             </tr>
           </thead>
           <tbody>
+            <tr>
+                <td rowspan="{{ rows|length + 1 }}"> 总表 </td>
+            </tr>
             {% for row in rows %}
             <tr>
-              <td style="width: 50%"> {{ row[0] }}</td>
-              <td style="width: 50%"> {{ row[1] }}</td>
+              <td>{{ row[0] }}</td>
+              <td>{{ row[1] }}</td>
             </tr>
             {% endfor %}
           </tbody>

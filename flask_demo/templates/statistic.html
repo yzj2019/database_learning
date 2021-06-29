@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.10/favicon.ico">
+  <link rel="canonical" href="https://getbootstrap.com/docs/3.4/examples/theme/">
+
+  <title>Theme Template for Bootstrap</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.10/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="container theme-showcase" role="main">
+    <div class="page-header">
+      <h1 style="text-align:center;">业务统计 - {{ dbname }}</h1>
+    </div>
+
+
+    <div class="col-md-6:center;">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>支行名称</th>
+            <th>{{ how }}</th>
+            <th>账户开户人次</th>
+            <th>贷款发放金额数</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td rowspan="{{ row['name']|length + 1 }}">{{ row['name'] }}</td>
+          </tr>
+          {% for data in row['data'] %}
+          <tr>
+            <td>{{ data[0] }}</td>
+            <td>{{ data[1] }}</td>
+            <td>{{ data[2] }}</td>
+          </tr>
+          {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+
+</html>
