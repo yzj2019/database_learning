@@ -71,9 +71,8 @@ $(document).ready(function () {
   });
 });
 
-$(document).ready(function () {
+function insertBtn_event(reactfunction) {
   //插入按钮的响应事件绑定，点击按钮插入选中的行
-  //$(document).ready(function(){});表明在文档完全加载好才运行
   $("#insertBtn").click(function () {
     if (confirm("确认要插入已经选择的行吗？")) {
       var checkeddata = get_checkeddata('search-table');
@@ -85,14 +84,22 @@ $(document).ready(function () {
           inputdata: checkeddata,
           function: "insert",
         }),
-        function (reData) {
-          //回调函数的处理方式
-          alert(reData["info"]);
-          location.reload();
-        }
+        reactfunction
       );
     }
   });
+}
+
+function react(reData) {
+  //回调函数的处理方式
+  alert(reData["info"]);
+  location.reload();
+}
+
+$(document).ready(function () {
+  //插入按钮的响应事件绑定，点击按钮插入选中的行
+  //$(document).ready(function(){});表明在文档完全加载好才运行
+  insertBtn_event(react);
 });
 
 $(document).ready(function () {

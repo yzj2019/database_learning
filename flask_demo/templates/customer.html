@@ -24,11 +24,11 @@
                 <form method="POST" class="form-inline" id="search-form">
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*">
+                            <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户身份证号</label>
                         </div>
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户姓名" id="客户姓名" placeholder="*">
+                            <input type="text" class="form-control" name="客户姓名" id="客户姓名" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户姓名</label>
                         </div>
                         <div class="col form-floating">
@@ -38,13 +38,13 @@
                     </div>
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户家庭住址" id="客户家庭住址" placeholder="*">
+                            <input type="text" class="form-control" name="客户家庭住址" id="客户家庭住址" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户家庭住址</label>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="联系人姓名" id="联系人姓名" placeholder="*">
+                            <input type="text" class="form-control" name="联系人姓名" id="联系人姓名" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>联系人姓名</label>
                         </div>
                         <div class="col form-floating">
@@ -58,7 +58,7 @@
                             <label>联系人email</label>
                         </div>
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="联系人与客户的关系" id="联系人与客户的关系" placeholder="*">
+                            <input type="text" class="form-control" name="联系人与客户的关系" id="联系人与客户的关系" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>联系人与客户的关系</label>
                         </div>
                     </div>

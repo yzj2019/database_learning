@@ -24,7 +24,7 @@
                 <form method="POST" class="form-inline" id="search-form">
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="支行名称" id="支行名称" placeholder="*">
+                            <input type="text" class="form-control" name="支行名称" id="支行名称" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>支行名称</label>
                         </div>
                         <div class="col form-floating">
@@ -38,15 +38,15 @@
                     </div>
                     <div class="row">
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="账户.账户号" id="账户号" placeholder="*">
+                            <input type="text" class="form-control" name="账户.账户号" id="账户号" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>账户号</label>
                         </div>
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*">
+                            <input type="text" class="form-control" name="客户身份证号" id="客户身份证号" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>客户身份证号</label>
                         </div>
                         <div class="col form-floating">
-                            <input type="text" class="form-control" name="透支额" id="透支额" placeholder="*">
+                            <input type="text" class="form-control" name="透支额" id="透支额" placeholder="*" onkeyup="value=value.replace(/[\']/,'*')">
                             <label>透支额</label>
                         </div>
                     </div>

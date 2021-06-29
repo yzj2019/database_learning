@@ -6,7 +6,7 @@ $(document).ready(function () {
       if (!$(this).is(".input")) {
         $(this)
           .addClass("input")
-          .html('<input type="text" value="' + $(this).text() + '" />')
+          .html('<input type="text" value="' + $(this).text() + '" onkeyup="' + "value=value.replace(/[\']/,'*')" + '" />')
           .find("input")
           .focus()
           .blur(function () {
