@@ -8,7 +8,7 @@ insert into `账户` values (0001, '云银行中科大支行', 1000, CURDATE(), 
 insert into `储蓄账户` values (0001, 0.025, '人民币');
 insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000000, TRUE);
 
-insert into `账户` values (0009, '云银行中科大支行', 1000, DATE_FORMAT('2020-01-01', '%Y-%m-%d'), 372301200000000000, CURDATE());
+insert into `账户` values (0009, '云银行中科大支行', 1000, DATE_FORMAT('2020-01-01', '%Y-%m-%d'), 372301200000000004, CURDATE());
 insert into `储蓄账户` values (0009, 0.025, '人民币');
 insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000004, TRUE);
 

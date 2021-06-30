@@ -543,6 +543,8 @@ class MyDefSQL:
                 sql = "select sum(付款金额) from 贷款付款 where DATE_FORMAT(付款日期, '%Y-%m' ) = '"+ month +"'"
                 print("sql is: "+sql)
                 loanrelease_sum = self.execute(sql)[0][0][0]
+                if loanrelease_sum==None:
+                    loanrelease_sum=0
                 print("res is: {0}".format(loanrelease_sum))
                 data.append(loanrelease_sum)
                 datas.append(data)
@@ -563,7 +565,7 @@ class MyDefSQL:
         max_date = self.execute("select CURDATE()")[0][0][0]
         print("mindate is {0}, maxdate is {1}".format(min_date, max_date))
         # print(type(max_date))
-        # 获取所有月份字串list
+        # 获取所有季度字串list
         between_quarters = GetBetweenQuarter(min_date, max_date)
         res = []
         subbanks = self.execute('''select 支行名称 from 支行''')[0]
@@ -586,12 +588,13 @@ class MyDefSQL:
                 sql = "select sum(付款金额) from 贷款付款 where concat(DATE_FORMAT(付款日期, '%Y'),'-',QUARTER(付款日期)) = '"+ quarter +"'"
                 print("sql is: "+sql)
                 loanrelease_sum = self.execute(sql)[0][0][0]
+                if loanrelease_sum==None:
+                    loanrelease_sum=0
                 print("res is: {0}".format(loanrelease_sum))
                 data.append(loanrelease_sum)
                 datas.append(data)
             re['data'] = datas
             res.append(re)
-        # 按月处理成季度
         return res
 
     def statistic_year(self):
@@ -627,6 +630,8 @@ class MyDefSQL:
                 sql = "select sum(付款金额) from 贷款付款 where DATE_FORMAT(付款日期, '%Y' ) = '"+ year +"'"
                 print("sql is: "+sql)
                 loanrelease_sum = self.execute(sql)[0][0][0]
+                if loanrelease_sum==None:
+                    loanrelease_sum=0
                 print("res is: {0}".format(loanrelease_sum))
                 data.append(loanrelease_sum)
                 datas.append(data)

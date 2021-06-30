@@ -32,7 +32,7 @@ function get_checkeddata(tab) {
 
 function post_json_to_server(postdata, succfunc) {
   //将json数据postdata用post方法提交到server的当前页面
-  //并接收server传回的回调数据并自动转成js对象，供回调函数func处理
+  //并接收server传回的回调数据并自动转成js对象，供回调函数succfunc处理
   $.ajax({
     //url: posturl, //访问地址--action地址，默认是当前页面
     type: "post", //提交方式
