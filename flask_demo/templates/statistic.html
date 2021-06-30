@@ -39,7 +39,7 @@
         <tbody>
           {% for row in rows %}
           <tr>
-            <td rowspan="{{ row['name']|length + 1 }}">{{ row['name'] }}</td>
+            <td rowspan="{{ row['data']|length + 1 }}">{{ row['name'] }}</td>
           </tr>
           {% for data in row['data'] %}
           <tr>
