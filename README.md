@@ -33,11 +33,10 @@
   │   │       ├── 脚本文件
   │   ├── templates
   │   │   ├── 网页模板
-  ├── LICENSE			可忽略
   ├── db_lab3.yaml	conda虚拟环境的配置文件
   └── README.md		实验报告/说明文档
   ```
-
+  
 - 创建数据库，导入测试数据
 
   - 创建数据库和访问用户
@@ -64,7 +63,7 @@
   python main.py
   ```
 
-  打开浏览器，输入url：http://127.0.0.1:5000，进入登陆页面，相应输入信息后登录
+  打开浏览器，输入url：http://localhost:5000，进入登陆页面，相应输入信息后登录
 
   我这里遇到了一个小bug，解决方案如下：
 
@@ -72,7 +71,26 @@
 
   <img src="./figs/install4.png" alt="1" style="zoom: 50%;" />
 
-## 概述实验过程和效果展示
+## 系统概述
+
+### 系统目标
+
+​		本系统旨在为银行的业务员提供一个直观方便的数据管理平台，方便银行业务员直接进行客户信息、账户信息、贷款业务的管理；同时为银行的管理者提供一个统计视图，让他们能够对所在支行的业务流水有一个直观的了解。
+
+### 需求说明
+
+1. 数据需求：
+
+   银行有多个支行。各个支行位于某个城市，每个支行有唯一的名字。银行要监控每个支行的资产。银行的客户通过其身份证号来标识。银行存储每个客户的姓名、联系电话以及家庭住址。为了安全起见，银行还要求客户提供一位联系人的信息，包括联系人姓名、手机号、Email 以及与客户的关系。客户可以有帐户，并且可以贷款。客户可能和某个银行员工发生联系，该员工是此客户的贷款负责人或银行帐户负责人。 银行员工也通过身份证号来标识。员工分为部门经理和普通员工，每个部门经理都负责领导其所在部门的员工，并且每个员工只允许在一个部门内工作。每个支行的管理机构存储每个员工的姓名、电话号码、家庭地址、所在的部门号、部门名称、部门类型及部门经理的身份证号。银行还需知道每个员工开始工作的日期，由此日期可以推知员工的雇佣期。 银行提供两类帐户——储蓄帐户和支票帐户。帐户可以由多个客户所共有，一个客户也可开设多个账户，但在一个支行内最多只能开设一个储蓄账户和一个支票账户。每个帐户被赋以唯一的帐户号。银行记录每个帐户的余额、 开户日期、 开户的支行名以及每个帐户所有者访问该帐户的最近日期。另外，每个储蓄帐户有利率和货币类型，且每个支票帐户有透支额。 每笔贷款由某个分支机构发放，能被一个或多个客户所共有。每笔贷款用唯一的贷款号标识。银行需要知道每笔贷款所贷金额以及逐次支付的情况（银行将贷款分几次付给客户）。虽然贷款号不能唯一标识银行所有为贷款所付的款项，但可以唯一标识为某贷款所付的款项。对每次的付款需要记录日期和金额。
+
+2. 业务功能需求：
+
+   - **客户管理：**提供客户所有信息的增、删、改、查功能；如果客户存在着关联账户或者贷 款记录，则不允许删除；
+   - **账户管理：**提供账户开户、销户、修改、查询功能，包括储蓄账户和支票账户；账户号 不允许修改；
+   - **贷款管理：**提供贷款信息的增、删、查功能，提供贷款发放功能；贷款信息一旦添加成 功后不允许修改；要求能查询每笔贷款的当前状态（未开始发放、发放中、已全部发 放）；处于发放中状态的贷款记录不允许删除；
+   - **业务统计：**按业务分类（储蓄、贷款）和时间（月、季、年）统计各个支行的业务总金 额和用户数，统计的结果以表格形式展示。
+
+## 实验过程和效果展示
 
 ### 登陆页面
 
@@ -106,9 +124,9 @@
 
 ### 表格的附加功能
 
-表单和按钮的样式也是从bootstrap的示例上扒下来的。
+表单、表格和按钮的样式也是从bootstrap的示例上扒下来的。
 
-1. 实现了search得到的表单前面加上checkbox，使用checkbox来选择待操作的行，效果如下：
+1. 实现了search得到的表格前面加上checkbox，使用checkbox来选择待操作的行，效果如下：
 
    <img src="./figs/additional_1-1.png" alt="1" style="zoom:33%;" />
 
@@ -118,11 +136,11 @@
 
    再次点击会取消选中。
 
-2. 实现了双击使表单变成input块，用户可以修改表单内容，在此基础上进行增删改操作
+2. 实现了双击使表格变成input块，用户可以修改表格内容，在此基础上进行增删改操作
 
    <img src="./figs/additional_2-1.png" alt="1" style="zoom: 33%;" />
 
-3. 实现了点击按钮，为表单添加已选中的所有行的副本，用户可以基于已有数据快速编造(bushi)新数据；
+3. 实现了点击按钮，为表格添加已选中的所有行的副本，用户可以基于已有数据快速编造(bushi)新数据；
 
    副本是只显示在前端的，并不改变后端数据，只有使用相应的增删改功能按钮后，才会相应改变后端数据；
 
@@ -193,6 +211,8 @@
    单击查询按钮后，成功查询：
    
    <img src="./figs/customer_search2.png" alt="1" style="zoom: 33%;" />
+   
+   考虑增加模糊查询，“LIKE”。
 
 下面的账户管理页面和贷款管理页面与客户管理页面类似，不做过多展示。
 
@@ -287,6 +307,14 @@
 ## 系统总体设计
 
 ### 模块结构
+
+模块整体结构图如下：
+
+<img src="./figs/report1.png" alt="1" style="zoom: 67%;" />
+
+业务管理系统分为四个子页面，每个子页面相互独立，且结构相差不大，如下：
+
+<img src="./figs/report2.png" alt="1" style="zoom:67%;" />
 
 1. 前端：
 
@@ -431,7 +459,7 @@
          '''获取从start开始到end之间的所有的年份；start传入的是datetime类型，返回的是datetime的list'''
      ```
 
-   - db.py：数据库交互类
+   - db.py：数据库交互类，后续考虑用继承拆分成子类
 
      ```python
      class MyDefSQL:
@@ -501,3 +529,814 @@
      ```
 
    - main.py：flask app构建
+
+### 系统工作流程
+
+1. 客户管理
+
+   - 增加客户信息
+
+     ps：其中一开始jinja2模板渲染所用的所有客户信息，也是通过select语句查询得到的，与后面查询操作类似，不再重复
+
+     ```mermaid
+     sequenceDiagram
+     title:增加客户信息
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的客户信息
+     	u->>s:单击表格某一行，选择一条客户信息，点击“添加选中行副本”按钮
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中，增加该行副本
+     	deactivate s
+     	loop 基于现有客户信息，快速修改得到新客户信息
+     		u->>s:双击表格新加的副本行的某一栏
+     		activate s
+     		s-->>u:该行的该栏变成input输入框
+     		u->>s:用户在输入框上修改信息
+     		u->>s:用户失去输入框的聚焦
+     		s-->>u:输入框变回正常的表格
+             deactivate s
+     	end
+     	u->>s:单击选中修改后的行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“插入选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造insert的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 修改客户信息
+
+     ```mermaid
+     sequenceDiagram
+     title:修改客户信息
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的客户信息
+     	loop 基于现有客户信息做修改
+     		u->>s:双击表格某行的某一栏
+     		activate s
+     		s-->>u:该行的该栏变成input输入框
+     		u->>s:用户在输入框上修改信息
+     		u->>s:用户失去输入框的聚焦
+     		s-->>u:输入框变回正常的表格
+             deactivate s
+     	end
+     	u->>s:单击选中修改后的行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“修改选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造update的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 删除客户信息：
+
+     ```mermaid
+     sequenceDiagram
+     title:删除客户信息
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的客户信息
+     	u->>s:单击选中行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“删除选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造delete的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 客户信息查询：
+
+     ```mermaid
+     sequenceDiagram
+     title:客户信息查询
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的客户信息
+     	loop 填写表单
+     		u->>u:填写表单信息
+     	end
+     	u->>s:点击“查询”按钮
+     	activate s
+     	s->>c:http post发送表单信息
+     	deactivate s
+     	activate c
+     	c->>d:构造select的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:用查询到的信息渲染jinja2模板，http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+2. 账户管理：
+
+   - 开户：
+
+     ```mermaid
+     sequenceDiagram
+     title:开户
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	u->>s:用户选择储蓄账户/支票账户子页面
+     	activate s
+     	s-->>u:首页表格展示所有的账户信息
+     	deactivate s
+     	u->>s:单击表格某一行，选择一条客户信息，点击“添加选中行副本”按钮
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中，增加该行副本
+     	deactivate s
+     	loop 基于现有账户信息，快速修改得到新账户信息
+     		u->>s:双击表格新加的副本行的某一栏
+     		activate s
+     		s-->>u:该行的该栏变成input输入框
+     		u->>s:用户在输入框上修改信息
+     		u->>s:用户失去输入框的聚焦
+     		s-->>u:输入框变回正常的表格
+             deactivate s
+     	end
+     	u->>s:单击选中修改后的行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“插入选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造insert的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 修改账户信息：
+
+     ```mermaid
+     sequenceDiagram
+     title:修改账户信息
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	u->>s:用户选择储蓄账户/支票账户子页面
+     	activate s
+     	s-->>u:首页表格展示所有的账户信息
+     	deactivate s
+     	loop 基于现有账户信息做修改
+     		u->>s:双击表格某行的某一栏
+     		activate s
+     		s-->>u:该行的该栏变成input输入框
+     		u->>s:用户在输入框上修改信息
+     		u->>s:用户失去输入框的聚焦
+     		s-->>u:输入框变回正常的表格
+             deactivate s
+     	end
+     	u->>s:单击选中修改后的行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“修改选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造update的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 删除账户信息
+
+     ```mermaid
+     sequenceDiagram
+     title:删除账户信息
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	u->>s:用户选择储蓄账户/支票账户子页面
+     	activate s
+     	s-->>u:首页表格展示所有的账户信息
+     	deactivate s
+     	u->>s:单击选中行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“删除选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造delete的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 账户信息查询
+
+     ```mermaid
+     sequenceDiagram
+     title:账户信息查询
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	u->>s:用户选择储蓄账户/支票账户子页面
+     	activate s
+     	s-->>u:首页表格展示所有的账户信息
+     	deactivate s
+     	loop 填写表单
+     		u->>u:填写表单信息
+     	end
+     	u->>s:点击“查询”按钮
+     	activate s
+     	s->>c:http post发送表单信息
+     	deactivate s
+     	activate c
+     	c->>d:构造select的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:用查询到的信息渲染jinja2模板，http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+     
+
+3. 贷款管理
+
+   - 插入贷款
+
+     ```mermaid
+     sequenceDiagram
+     title:插入贷款
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的贷款信息
+     	u->>s:单击表格某一行，选择一条客户信息，点击“添加选中行副本”按钮
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中，增加该行副本
+     	deactivate s
+     	loop 基于现有贷款信息，快速修改得到新贷款信息
+     		u->>s:双击表格新加的副本行的某一栏
+     		activate s
+     		s-->>u:该行的该栏变成input输入框
+     		u->>s:用户在输入框上修改信息
+     		u->>s:用户失去输入框的聚焦
+     		s-->>u:输入框变回正常的表格
+             deactivate s
+     	end
+     	u->>s:单击选中修改后的行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“插入贷款”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造insert的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 贷款发放
+
+     ```mermaid
+     sequenceDiagram
+     title:贷款发放
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的贷款信息
+     	u->>s:单击选中某行贷款
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“贷款发放”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造insert、update的sql语句并组合执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 贷款删除
+
+     ```mermaid
+     sequenceDiagram
+     title:删除贷款信息
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的贷款信息
+     	u->>s:单击选中行
+     	activate s
+     	s-->>u:改变该行样式，checkbox选中
+     	deactivate s
+     	u->>s:点击“删除选中行”按钮
+     	activate s
+     	s->>c:获得checked的表格行，Ajax post发送
+     	deactivate s
+     	activate c
+     	c->>d:构造delete的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:将返回的信息组装成http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+   - 贷款信息查询
+
+     ```mermaid
+     sequenceDiagram
+     title:贷款信息查询
+     	participant u as 用户
+     	participant s as 浏览器端
+     	participant c as 服务端
+     	participant d as 数据库
+     	s-->>u:首页表格展示所有的贷款信息
+     	loop 填写表单
+     		u->>u:填写表单信息
+     	end
+     	u->>s:点击“查询”按钮
+     	activate s
+     	s->>c:http post发送表单信息
+     	deactivate s
+     	activate c
+     	c->>d:构造select的sql语句并执行
+     	deactivate c
+     	activate d
+     	d-->>c:返回相关信息
+     	deactivate d
+     	activate c
+     	c-->>s:用查询到的信息渲染jinja2模板，http报文传输
+     	deactivate c
+     	activate s
+     	s-->>u:相应错误处理，生成提示信息
+     	deactivate s
+     ```
+
+4. 业务统计：
+
+   ```mermaid
+   sequenceDiagram
+   title:业务统计
+   	participant u as 用户
+   	participant s as 浏览器端
+   	participant c as 服务端
+   	participant d as 数据库
+   	u->>s:用户选择按年/季度/月统计的子页面
+   	activate s
+   	s->>c:发送http get请求
+   	deactivate s
+   	activate c
+   	c->>d:获取有记录的最早日期、CURDATE
+   	deactivate c
+   	activate d
+   	d->>c:返回日期
+   	deactivate d
+   	activate c
+   	c->>c:构建日期区间中每年/每季度/每月的list
+   	loop 按时间单位做查询
+   		c->>d:基于list构建sql分组聚集查询语句，并执行
+   		d-->>c:返回查询的信息
+   		c->>c:组装信息
+   	end
+   	deactivate c
+   	c-->>s:用查询到的信息渲染模板，http报文传输
+   	activate s
+   	s-->>u:首页表格展示所有的统计信息<br>包括账户开户人次和贷款发放的金额数
+   	deactivate s
+   ```
+
+### 数据库设计
+
+1. ER图
+
+   ![1](./figs/db1.png)
+
+2. 逻辑数据库结构：
+
+   - 支行
+
+3. 最终的物理数据库结构：
+
+   对直接导出的sql语句做了一点处理，详见前面的实验过程。
+
+   - 员工：
+
+     ```sql
+     create table 员工
+     (
+        支行名称                 varchar(128) not null,
+        部门号                  numeric(8,0) not null,
+        员工身份证号               numeric(18,0) not null,
+        员工姓名                 varchar(32),
+        员工电话号码               numeric(11,0),
+        员工家庭地址               varchar(1024),
+        员工类型                 bool,
+        开始工作的日期              date,
+        primary key (支行名称, 部门号, 员工身份证号)
+     );
+     ```
+
+   - 客户
+
+     ```sql
+     create table 客户
+     (
+        客户身份证号               numeric(18,0) not null,
+        客户姓名                 varchar(32),
+        客户联系电话               numeric(11,0),
+        客户家庭住址               varchar(1024),
+        联系人姓名                varchar(32),
+        联系人手机号               numeric(11,0),
+        联系人email             varchar(64),
+        联系人与客户的关系            varchar(128),
+        primary key (客户身份证号)
+     );
+     ```
+
+   - 客户在银行的账户：
+
+     ```sql
+     create table 客户在银行的账户
+     (
+        支行名称                 varchar(128) not null,
+        客户身份证号               numeric(18,0) not null,
+        账户类型                 bool not null,
+        primary key (支行名称, 客户身份证号, 账户类型)
+     );
+     ```
+
+   - 账户、储蓄账户、支票账户：
+
+     ```sql
+     create table 账户
+     (
+        账户号                  numeric(8,0) not null,
+        支行名称                 varchar(128) not null,
+        余额                   float(8,2),
+        开户日期                 date,
+        客户身份证号               numeric(18,0) not null,
+        最近访问日期               date,
+        primary key (账户号)
+     );
+     create table 储蓄账户
+     (
+        账户号                  numeric(8,0) not null,
+        利率                   float,
+        货币类型                 varchar(32),
+        primary key (账户号)
+     );
+     create table 支票账户
+     (
+        账户号                  numeric(8,0) not null,
+        透支额                  float(8,2),
+        primary key (账户号)
+     );
+     ```
+
+   - 支行、部门、负责：
+
+     ```sql
+     create table 支行
+     (
+        支行名称                 varchar(128) not null,
+        支行资产                 float(12,2),
+        primary key (支行名称)
+     );
+     create table 部门
+     (
+        支行名称                 varchar(128) not null,
+        部门号                  numeric(8,0) not null,
+        部门名称                 varchar(128),
+        部门类型                 national varchar(255),
+        部门经理身份证号             numeric(18,0),
+        primary key (支行名称, 部门号)
+     );
+     create table 负责
+     (
+        支行名称                 varchar(128) not null,
+        部门号                  numeric(8,0) not null,
+        员工身份证号               numeric(18,0) not null,
+        客户身份证号               numeric(18,0) not null,
+        负责类型                 national varchar(1),
+        primary key (支行名称, 部门号, 员工身份证号, 客户身份证号)
+     );
+     ```
+
+   - 贷款、贷款付款：
+
+     ```sql
+     create table 贷款
+     (
+        贷款号                  numeric(8,0) not null,
+        支行名称                 varchar(128) not null,
+        客户身份证号               numeric(18,0) not null,
+        所贷金额                 float(8,2),
+        逐次支付情况               numeric(8,0),
+        primary key (贷款号)
+     );
+     create table 贷款付款
+     (
+        贷款号                  numeric(8,0) not null,
+        付款码                  numeric(8,0) not null,
+        付款日期                 date not null,
+        付款金额                 float(8,2) not null,
+        primary key (贷款号, 付款码)
+     );
+     ```
+
+   - 外键：
+
+     ```sql
+     alter table 储蓄账户 add constraint FK_账户类型 foreign key (账户号)
+           references 账户 (账户号) on delete restrict on update restrict;
+     alter table 员工 add constraint FK_所属 foreign key (支行名称, 部门号)
+           references 部门 (支行名称, 部门号) on delete restrict on update restrict;
+     alter table 客户在银行的账户 add constraint FK_Relationship_6 foreign key (支行名称)
+           references 支行 (支行名称) on delete restrict on update restrict;
+     alter table 客户在银行的账户 add constraint FK_Relationship_7 foreign key (客户身份证号)
+           references 客户 (客户身份证号) on delete restrict on update restrict;
+     alter table 支票账户 add constraint FK_账户类型2 foreign key (账户号)
+           references 账户 (账户号) on delete restrict on update restrict;
+     alter table 负责 add constraint FK_负责 foreign key (支行名称, 部门号, 员工身份证号)
+           references 员工 (支行名称, 部门号, 员工身份证号) on delete restrict on update restrict;
+     alter table 负责 add constraint FK_负责2 foreign key (客户身份证号)
+           references 客户 (客户身份证号) on delete restrict on update restrict;
+     alter table 账户 add constraint FK_开户 foreign key (支行名称)
+           references 支行 (支行名称) on delete restrict on update restrict;
+     alter table 账户 add constraint FK_持有 foreign key (客户身份证号)
+           references 客户 (客户身份证号) on delete restrict on update restrict;
+     alter table 贷款 add constraint FK_借贷 foreign key (客户身份证号)
+           references 客户 (客户身份证号) on delete restrict on update restrict;
+     alter table 贷款 add constraint FK_发放 foreign key (支行名称)
+           references 支行 (支行名称) on delete restrict on update restrict;
+     alter table 贷款付款 add constraint FK_逐次支付情况 foreign key (贷款号)
+           references 贷款 (贷款号) on delete restrict on update restrict;
+     alter table 部门 add constraint FK_上属 foreign key (支行名称)
+           references 支行 (支行名称) on delete restrict on update restrict;
+     ```
+
+## 测试
+
+原始测试数据：
+
+```sql
+use db_lab3;
+insert into `支行` values ('云银行中科大支行', 300000);
+INSERT INTO `客户` VALUES (372301200000000000,'于子健',19912345678,'安徽省合肥市中国科学技术大学中校区','于子健',18887654321,'name@example.com','本人'),(372301200000000001,'张三',19912345678,'安徽省合肥市中国科学技术大学中校区','张三',18887654321,'name@example.com','本人'),(372301200000000002,'李四',19912345679,'安徽省合肥市中国科学技术大学中校区','李四',18887654321,'name@example.com','本人'),(372301200000000003,'王五',19912345678,'安徽省合肥市中国科学技术大学中校区','王五',18887654321,'name@example.com','本人'),(372301200000000004,'马六',19912345678,'安徽省合肥市中国科学技术大学中校区','马六',18887654321,'name@example.com','本人');
+insert into `账户` values (0001, '云银行中科大支行', 1000, CURDATE(), 372301200000000000, CURDATE());
+insert into `储蓄账户` values (0001, 0.025, '人民币');
+insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000000, TRUE);
+insert into `账户` values (0009, '云银行中科大支行', 1000, DATE_FORMAT('2020-01-01', '%Y-%m-%d'), 372301200000000004, CURDATE());
+insert into `储蓄账户` values (0009, 0.025, '人民币');
+insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000004, TRUE);
+insert into `账户` values (0002, '云银行中科大支行', 0, CURDATE(), 372301200000000000, CURDATE());
+insert into `支票账户` values (0002, 20000);
+insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000000, FALSE);
+insert into `账户` values (0003, '云银行中科大支行', 1000, CURDATE(), 372301200000000001, CURDATE());
+insert into `储蓄账户` values (0003, 0.025, '人民币');
+insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000001, TRUE);
+insert into `账户` values (0004, '云银行中科大支行', 0, CURDATE(), 372301200000000002, CURDATE());
+insert into `支票账户` values (0004, 20000);
+insert into `客户在银行的账户` values ('云银行中科大支行', 372301200000000002, FALSE);
+insert into `贷款` values (0001, '云银行中科大支行', 372301200000000000, 20000, 4);
+insert into `贷款付款` values (0001, 0001, CURDATE(), 5000);
+```
+
+各个功能需求测试：
+
+1. 客户管理：
+
+   - 增：
+
+     | 客户身份证号       | 客户姓名 | 客户联系电话 | 客户家庭住址                       | 联系人姓名 | 联系人手机号 | 联系人email      | 联系人与客户的关系 | 结果               |
+     | ------------------ | -------- | ------------ | ---------------------------------- | ---------- | ------------ | ---------------- | ------------------ | ------------------ |
+     | 372301200000000005 | bbb      | 19912345678  | 安徽省合肥市中国科学技术大学中校区 | bbb        | 18887654321  | name@example.com | 本人               | 插入成功           |
+     | 372301200000000001 | ccc      | 19912345678  | 安徽省合肥市中国科学技术大学中校区 | ccc        | 18887654321  | name@example.com | 本人               | 插入失败，主键重复 |
+
+   - 删：
+
+     | 客户身份证号       | 客户姓名 | 客户联系电话 | 客户家庭住址                       | 联系人姓名 | 联系人手机号 | 联系人email      | 联系人与客户的关系 | 结果                                   |
+     | ------------------ | -------- | ------------ | ---------------------------------- | ---------- | ------------ | ---------------- | ------------------ | -------------------------------------- |
+     | 372301200000000005 | bbb      | 19912345678  | 安徽省合肥市中国科学技术大学中校区 | bbb        | 18887654321  | name@example.com | 本人               | 删除成功                               |
+     | 372301200000000000 | 于子健   | 19912345678  | 安徽省合肥市中国科学技术大学中校区 | 于子健     | 18887654321  | name@example.com | 本人               | 删除失败，客户仍有关联的账户或贷款记录 |
+
+   - 改：
+
+     | 客户身份证号       | 客户姓名 | 客户联系电话 | 客户家庭住址                       | 联系人姓名 | 联系人手机号 | 联系人email      | 联系人与客户的关系 | 结果     |
+     | ------------------ | -------- | ------------ | ---------------------------------- | ---------- | ------------ | ---------------- | ------------------ | -------- |
+     | 372301200000000004 | aaa      | 19912345678  | 安徽省合肥市中国科学技术大学中校区 | aaa        | 18887654321  | name@example.com | 本人               | 修改成功 |
+
+   - 查：查找客户姓名为于子健的客户
+
+     | 客户身份证号       | 客户姓名 | 客户联系电话 | 客户家庭住址                       | 联系人姓名 | 联系人手机号 | 联系人email      | 联系人与客户的关系 | 结果     |
+     | ------------------ | -------- | ------------ | ---------------------------------- | ---------- | ------------ | ---------------- | ------------------ | -------- |
+     | 372301200000000000 | 于子健   | 19912345678  | 安徽省合肥市中国科学技术大学中校区 | 于子健     | 18887654321  | name@example.com | 本人               | 查询成功 |
+
+2. 账户管理：以储蓄账户为例
+
+   - 开户：
+
+     | 账户号 | 支行名称         | 余额   | 开户日期   | 客户身份证号       | 最近访问日期 | 利率  | 货币类型 | 结果                                                       |
+     | ------ | ---------------- | ------ | ---------- | ------------------ | ------------ | ----- | -------- | ---------------------------------------------------------- |
+     | 10     | 云银行中科大支行 | 1000.0 | 2020-01-01 | 372301200000000002 | 2021-07-06   | 0.025 | 人民币   | 插入成功                                                   |
+     | 11     | 云银行中科大支行 | 1000.0 | 2021-07-06 | 372301200000000001 | 2021-07-06   | 0.025 | 人民币   | 插入失败，主键重复（同一客户在同一支行只能有一个储蓄账户） |
+     | 3      | 云银行中科大支行 | 1000.0 | 2021-07-06 | 372301200000000003 | 2021-07-06   | 0.025 | 人民币   | 插入失败，主键重复                                         |
+
+   - 销户：
+
+     | 账户号 | 支行名称         | 余额   | 开户日期   | 客户身份证号       | 最近访问日期 | 利率  | 货币类型 | 结果     |
+     | ------ | ---------------- | ------ | ---------- | ------------------ | ------------ | ----- | -------- | -------- |
+     | 10     | 云银行中科大支行 | 1000.0 | 2020-01-01 | 372301200000000002 | 2021-07-06   | 0.025 | 人民币   | 删除成功 |
+
+   - 修改账户：
+
+     | 账户号 | 支行名称         | 余额   | 开户日期   | 客户身份证号       | 最近访问日期 | 利率  | 货币类型 | 结果     |
+     | ------ | ---------------- | ------ | ---------- | ------------------ | ------------ | ----- | -------- | -------- |
+     | 3      | 云银行中科大支行 | 3000.0 | 2021-07-06 | 372301200000000001 | 2021-07-06   | 0.025 | 人民币   | 修改成功 |
+
+   - 查询：查询支行名称为云银行中科大支行的储蓄账户
+
+     | 账户号 | 支行名称         | 余额   | 开户日期   | 客户身份证号       | 最近访问日期 | 利率  | 货币类型 |
+     | ------ | ---------------- | ------ | ---------- | ------------------ | ------------ | ----- | -------- |
+     | 1      | 云银行中科大支行 | 1000.0 | 2021-07-06 | 372301200000000000 | 2021-07-06   | 0.025 | 人民币   |
+     | 3      | 云银行中科大支行 | 1000.0 | 2021-07-06 | 372301200000000001 | 2021-07-06   | 0.025 | 人民币   |
+     | 9      | 云银行中科大支行 | 1000.0 | 2020-01-01 | 372301200000000004 | 2021-07-06   | 0.025 | 人民币   |
+
+3. 贷款管理：
+
+   - 插入贷款：
+
+     | 贷款号 | 支行名称         | 客户身份证号       | 所贷金额 | 逐次支付情况 | 当前状态             | 结果               |
+     | ------ | ---------------- | ------------------ | -------- | ------------ | -------------------- | ------------------ |
+     | 1      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 发放中，已发放次数=1 | 插入失败，主键重复 |
+     | 2      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 未开始发放           | 插入成功           |
+     | 3      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 未开始发放           | 插入成功           |
+
+   - 发放贷款：为贷款号为2的发放4次贷款，最终结果如下，四次全部发放成功
+
+     | 贷款号 | 支行名称         | 客户身份证号       | 所贷金额 | 逐次支付情况 | 当前状态             |
+     | ------ | ---------------- | ------------------ | -------- | ------------ | -------------------- |
+     | 1      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 发放中，已发放次数=1 |
+     | 2      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 已全部发放           |
+     | 3      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 未开始发放           |
+
+   - 删除贷款：删除贷款号为1、2、3的贷款，结果如下
+
+     | 贷款号 | 支行名称         | 客户身份证号       | 所贷金额 | 逐次支付情况 | 当前状态             | 结果                             |
+     | ------ | ---------------- | ------------------ | -------- | ------------ | -------------------- | -------------------------------- |
+     | 1      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 发放中，已发放次数=1 | 删除失败，发放中的贷款不允许删除 |
+     | 2      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 已全部发放           | 删除成功                         |
+     | 3      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 未开始发放           | 删除成功                         |
+
+   - 贷款查询：查询支行名称为云银行中科大支行的贷款，结果如下
+
+     | 贷款号 | 支行名称         | 客户身份证号       | 所贷金额 | 逐次支付情况 | 当前状态             |
+     | ------ | ---------------- | ------------------ | -------- | ------------ | -------------------- |
+     | 1      | 云银行中科大支行 | 372301200000000000 | 20000.0  | 4            | 发放中，已发放次数=1 |
+
+4. 业务统计：
+
+   - 按月：
+
+     <img src="./figs/statistic3.png" alt="1" style="zoom: 67%;" />
+
+   - 按季度：
+
+     <img src="./figs/statistic4.png" alt="1" style="zoom: 50%;" />
+
+   - 按年：
+
+     <img src="./figs/statistic5.png" alt="1" style="zoom: 50%;" />
+
+## 总结和讨论
+
+系统设计过程中有诸般体会，最主要是感觉，一个人想要做成一个完成度比较高的系统，困难略大。
+
+本系统完成度较低，后续考虑做以下调整：
+
+- 将简单使用MySQLdb做数据库交互，改为使用ORM做数据库交互；
+- 完善异常处理；
+- 优化前端效果；考虑用vue实现一版前端；
+- 尝试前后端分离式的架构；
+
+##### 
